@@ -1,0 +1,701 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mainBgColor"
+
+    tools:context="pl.tobzzo.miechowskiepowietrze.MainActivity">
+
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipe_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <ScrollView
+            android:id="@+id/sensorsScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/airQualityImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_centerHorizontal="true"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/question_mark_1421013_640" />
+
+                <ProgressBar
+                    android:id="@+id/sensorLoadingProgress"
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:indeterminate="true"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <TableLayout
+                    android:id="@+id/sensorResultTable"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <TableRow
+                        android:id="@+id/sensorSikorskiego"
+                        android:background="@color/tableRowBackground"
+                        android:padding="1dp">
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:text="SIKORSKIEGO"
+                                android:textColor="@color/textColor"
+                                android:textSize="@dimen/sensorNameTextSize" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <com.daimajia.numberprogressbar.NumberProgressBar
+                                android:id="@+id/sensorSikorskiegoProgress"
+                                style="@style/NumberProgressBar_Default"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                app:progress_max="100"
+                                app:progress_current="0"
+                                app:progress_reached_bar_height="15dp"
+                                app:progress_text_size="12sp"
+                                app:progress_text_visibility="invisible"
+                                app:progress_unreached_bar_height="5dp" />
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+
+                            <TextView
+                                android:id="@+id/sensorSikorskiegoDetailsPm25"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:text="PM2.5 --- "
+                                android:textColor="@color/textColor"
+                                android:textSize="@dimen/sensorDetailsTextSize" />
+
+                            <TextView
+                                android:id="@+id/sensorSikorskiegoDetailsPm10"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:text="PM10 --- "
+                                android:textColor="@color/textColor"
+                                android:textSize="@dimen/sensorDetailsTextSize" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <ImageView
+                                android:id="@+id/sensorSikorskiegoLegend"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/ic_timeline_black_48dp" />
+                        </LinearLayout>
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/sensorSikorskiegoHistory"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <com.github.mikephil.charting.charts.BarChart
+                                android:id="@+id/sensorSikorskiegoHistoryChart"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp" />
+
+
+                        </LinearLayout>
+                    </TableRow>
+
+
+                    <TableRow
+                        android:id="@+id/sensorRynek"
+                        android:background="@color/tableRowBackground"
+                        android:padding="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:text="RYNEK"
+                                android:textColor="@color/textColor"
+                                android:textSize="@dimen/sensorNameTextSize" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <com.daimajia.numberprogressbar.NumberProgressBar
+                                android:id="@+id/sensorRynekProgress"
+                                style="@style/NumberProgressBar_Default"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                app:progress_max="100"
+                                app:progress_current="0"
+                                app:progress_reached_bar_height="15dp"
+                                app:progress_text_size="12sp"
+                                app:progress_text_visibility="invisible"
+                                app:progress_unreached_bar_height="5dp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <TextView
+                                android:id="@+id/sensorRynekDetailsPm25"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:text="PM2.5 --- "
+                                android:textColor="@color/textColor"
+                                android:textSize="@dimen/sensorDetailsTextSize" />
+
+
+                            <TextView
+                                android:id="@+id/sensorRynekDetailsPm10"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:text="PM10 --- "
+                                android:textColor="@color/textColor"
+                                android:textSize="@dimen/sensorDetailsTextSize" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <ImageView
+                                android:id="@+id/sensorRynekLegend"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/ic_timeline_black_48dp" />
+                        </LinearLayout>
+
+
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/sensorRynekHistory"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <com.github.mikephil.charting.charts.BarChart
+                                android:id="@+id/sensorRynekHistoryChart"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp" />
+
+
+                        </LinearLayout>
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/sensorKopernika"
+                        android:background="@color/tableRowBackground">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:text="KOPERNIKA"
+                                android:textColor="@color/textColor"
+                                android:textSize="@dimen/sensorNameTextSize" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <com.daimajia.numberprogressbar.NumberProgressBar
+                                android:id="@+id/sensorKopernikaProgress"
+                                style="@style/NumberProgressBar_Default"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                app:progress_max="100"
+                                app:progress_current="0"
+                                app:progress_reached_bar_height="15dp"
+                                app:progress_text_size="12sp"
+                                app:progress_text_visibility="invisible"
+                                app:progress_unreached_bar_height="5dp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <TextView
+                                android:id="@+id/sensorKopernikaDetailsPm25"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:text="PM2.5 --- "
+                                android:textColor="@color/textColor"
+                                android:textSize="@dimen/sensorDetailsTextSize" />
+
+                            <TextView
+                                android:id="@+id/sensorKopernikaDetailsPm10"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:text="PM10 --- "
+                                android:textColor="@color/textColor"
+                                android:textSize="@dimen/sensorDetailsTextSize" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <ImageView
+                                android:id="@+id/sensorKopernikaLegend"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/ic_timeline_black_48dp"
+                                android:textColor="@color/textColor" />
+                        </LinearLayout>
+
+
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/sensorKopernikaHistory"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <com.github.mikephil.charting.charts.BarChart
+                                android:id="@+id/sensorKopernikaHistoryChart"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp" />
+
+
+                        </LinearLayout>
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/sensorXXXlecia"
+                        android:background="@color/tableRowBackground">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:text="XXX-LECIA"
+                                android:textColor="@color/textColor"
+                                android:textSize="@dimen/sensorNameTextSize" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <com.daimajia.numberprogressbar.NumberProgressBar
+                                android:id="@+id/sensorXXXleciaProgress"
+                                style="@style/NumberProgressBar_Default"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                app:progress_max="100"
+                                app:progress_current="0"
+                                app:progress_reached_bar_height="15dp"
+                                app:progress_text_size="12sp"
+                                app:progress_text_visibility="invisible"
+                                app:progress_unreached_bar_height="5dp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <TextView
+                                android:id="@+id/sensorXXXleciaDetailsPm25"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:text="PM2.5 --- "
+                                android:textColor="@color/textColor"
+                                android:textSize="@dimen/sensorDetailsTextSize" />
+
+                            <TextView
+                                android:id="@+id/sensorXXXleciaDetailsPm10"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:text="PM10 --- "
+                                android:textColor="@color/textColor"
+                                android:textSize="@dimen/sensorDetailsTextSize" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <ImageView
+                                android:id="@+id/sensorXXXleciaLegend"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/ic_timeline_black_48dp" />
+                        </LinearLayout>
+
+
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/sensorXXXleciaHistory"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <com.github.mikephil.charting.charts.BarChart
+                                android:id="@+id/sensorXXXleciaHistoryChart"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp" />
+
+
+                        </LinearLayout>
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/sensorSzpitalna"
+                        android:background="@color/tableRowBackground">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:text="SZPITALNA"
+                                android:textColor="@color/textColor"
+                                android:textSize="@dimen/sensorNameTextSize" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <com.daimajia.numberprogressbar.NumberProgressBar
+                                android:id="@+id/sensorSzpitalnaProgress"
+                                style="@style/NumberProgressBar_Default"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                app:progress_max="100"
+                                app:progress_current="0"
+                                app:progress_reached_bar_height="15dp"
+                                app:progress_text_size="12sp"
+                                app:progress_text_visibility="invisible"
+                                app:progress_unreached_bar_height="5dp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <TextView
+                                android:id="@+id/sensorSzpitalnaDetailsPm25"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:text="PM2.5 --- "
+                                android:textColor="@color/textColor"
+                                android:textSize="@dimen/sensorDetailsTextSize" />
+
+                            <TextView
+                                android:id="@+id/sensorSzpitalnaDetailsPm10"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:text="PM10 --- "
+                                android:textColor="@color/textColor"
+                                android:textSize="@dimen/sensorDetailsTextSize" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <ImageView
+                                android:id="@+id/sensorSzpitalnaLegend"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/ic_timeline_black_48dp"
+                                android:textColor="@color/textColor" />
+                        </LinearLayout>
+
+
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/sensorSzpitalnaHistory"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <com.github.mikephil.charting.charts.BarChart
+                                android:id="@+id/sensorSzpitalnaHistoryChart"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp" />
+
+
+                        </LinearLayout>
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/sensorKrotka"
+                        android:background="@color/tableRowBackground">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:text="KRÓTKA"
+                                android:textColor="@color/textColor"
+                                android:textSize="@dimen/sensorNameTextSize" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <com.daimajia.numberprogressbar.NumberProgressBar
+                                android:id="@+id/sensorKrotkaProgress"
+                                style="@style/NumberProgressBar_Default"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                app:progress_max="100"
+                                app:progress_current="0"
+                                app:progress_reached_bar_height="15dp"
+                                app:progress_text_size="12sp"
+                                app:progress_text_visibility="invisible"
+                                app:progress_unreached_bar_height="5dp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <TextView
+                                android:id="@+id/sensorKrotkaDetailsPm25"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:text="PM2.5 --- "
+                                android:textColor="@color/textColor"
+                                android:textSize="@dimen/sensorDetailsTextSize" />
+
+                            <TextView
+                                android:id="@+id/sensorKrotkaDetailsPm10"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:text="PM10 --- "
+                                android:textColor="@color/textColor"
+                                android:textSize="@dimen/sensorDetailsTextSize" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <ImageView
+                                android:id="@+id/sensorKrotkaLegend"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/ic_timeline_black_48dp" />
+                        </LinearLayout>
+
+
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/sensorKrotkaHistory"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <com.github.mikephil.charting.charts.BarChart
+                                android:id="@+id/sensorKrotkaHistoryChart"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp" />
+
+
+                        </LinearLayout>
+                    </TableRow>
+
+                </TableLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</RelativeLayout>

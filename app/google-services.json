@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "80970938414",
+    "project_id": "miechowskie-powietrze"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:80970938414:android:7c7fe4b12ade05db",
+        "android_client_info": {
+          "package_name": "pl.tobzzo.miechowskiepowietrze"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHsq41KJnVUhTGXZ7-xliFW6K5X_Zmdt4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-96004743-1"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

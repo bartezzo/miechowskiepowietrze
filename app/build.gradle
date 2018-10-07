@@ -1,0 +1,58 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "pl.tobzzo.miechowskiepowietrze"
+        minSdkVersion 14
+        targetSdkVersion 28
+        versionCode 3
+        versionName "1.0.3"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles  'proguard-rules.pro'
+
+            buildConfigField "String", "hiddenPassword1", "\"${hiddenPassword1}\""
+            buildConfigField "String", "hiddenPassword2", "\"${hiddenPassword2}\""
+
+            debuggable true
+        }
+        release {
+
+            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles  'proguard-rules.pro'
+
+            buildConfigField "String", "hiddenPassword1", "\"${hiddenPassword1}\""
+            buildConfigField "String", "hiddenPassword2", "\"${hiddenPassword2}\""
+
+            debuggable false
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.koushikdutta.ion:ion:2.2.1'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.1'
+    api 'com.daimajia.numberprogressbar:library:1.4@aar'
+    implementation 'com.orhanobut:logger:1.15'
+    implementation 'com.google.android.gms:play-services-analytics:16.0.4'
+
+}
+repositories {
+    mavenCentral()
+    maven { url "https://jitpack.io" }
+}
+
+
+apply plugin: 'com.google.gms.google-services'
