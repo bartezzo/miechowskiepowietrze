@@ -376,7 +376,7 @@
                     </TableRow>
 
                     <TableRow
-                        android:id="@+id/sensorXXXlecia"
+                        android:id="@+id/sensorParkowe"
                         android:background="@color/tableRowBackground">
 
                         <LinearLayout
@@ -389,9 +389,10 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:padding="5dp"
-                                android:text="XXX-LECIA"
+                                android:text="PARKOWE"
                                 android:textColor="@color/textColor"
-                                android:textSize="@dimen/sensorNameTextSize" />
+                                android:textSize="@dimen/sensorNameTextSize"
+                                />
 
 
                         </LinearLayout>
@@ -404,7 +405,7 @@
                             android:padding="5dp">
 
                             <com.daimajia.numberprogressbar.NumberProgressBar
-                                android:id="@+id/sensorXXXleciaProgress"
+                                android:id="@+id/sensorParkoweProgress"
                                 style="@style/NumberProgressBar_Default"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -426,7 +427,7 @@
                             android:padding="5dp">
 
                             <TextView
-                                android:id="@+id/sensorXXXleciaDetailsPm25"
+                                android:id="@+id/sensorParkoweDetailsPm25"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:padding="5dp"
@@ -435,7 +436,7 @@
                                 android:textSize="@dimen/sensorDetailsTextSize" />
 
                             <TextView
-                                android:id="@+id/sensorXXXleciaDetailsPm10"
+                                android:id="@+id/sensorParkoweDetailsPm10"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:padding="5dp"
@@ -451,7 +452,7 @@
                             android:padding="5dp">
 
                             <ImageView
-                                android:id="@+id/sensorXXXleciaLegend"
+                                android:id="@+id/sensorParkoweLegend"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
                                 android:src="@drawable/ic_timeline_black_48dp" />
@@ -461,7 +462,7 @@
                     </TableRow>
 
                     <TableRow
-                        android:id="@+id/sensorXXXleciaHistory"
+                        android:id="@+id/sensorParkoweHistory"
                         android:visibility="gone">
 
                         <LinearLayout
@@ -472,7 +473,7 @@
                             android:padding="5dp">
 
                             <com.github.mikephil.charting.charts.BarChart
-                                android:id="@+id/sensorXXXleciaHistoryChart"
+                                android:id="@+id/sensorParkoweHistoryChart"
                                 android:layout_width="match_parent"
                                 android:layout_height="100dp" />
 
