@@ -1,45 +1,45 @@
 
-squid:S3008"\Rename this field "MIECHOW_KOPERNIKA" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ô¶ÒÆûÿÿÿÿ8ÔøÑÀŒ-
-•"squid:ClassVariableVisibilityCheck"[Make MIECHOW_PARKOWE a static final constant or non-public and provide accessors if needed.(óÿ²›úÿÿÿÿ8‹ªƒÂŒ-
-isquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Şíª÷8ÔøÑÀŒ-
-„squid:S3008"aRename this field "SENSOR_MIECHOW_PARKOWE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(™ñÕ‚ùÿÿÿÿ8‹ªƒÂŒ-
-csquid:S1444"@Make this "public static SENSOR_MIECHOW_SIKORSKIEGO" field final(®¨åÿÿÿÿÿ8ÔøÑÀŒ-
-_squid:S1444"<Make this "public static SENSOR_MIECHOW_PARKOWE" field final(™ñÕ‚ùÿÿÿÿ8‹ªƒÂŒ-
-Zsquid:S1444"7Make this "public static MIECHOW_SZPITALNA" field final(û§çüÿÿÿÿ8ÔøÑÀŒ-
-wsquid:S3008"YRename this field "MIECHOW_KROTKA" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(è·şƒ8ÔøÑÀŒ-
-Zsquid:S1444"7Make this "public static MIECHOW_KOPERNIKA" field final(Ô¶ÒÆûÿÿÿÿ8ÔøÑÀŒ-
 |squid:S3008"^Rename this field "MIECHOW_SIKORSKIEGO" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÙãùĞ8ÔøÑÀŒ-
-~squid:S3008"`Rename this field "SENSOR_MIECHOW_KROTKA" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(·Éôæ8ÔøÑÀŒ-
-Esquid:S2386""Make member "sensors" "protected".(¢Ø»úÿÿÿÿ8ÔøÑÀŒ-
-"squid:ClassVariableVisibilityCheck"ZMake MIECHOW_KROTKA a static final constant or non-public and provide accessors if needed.(è·şƒ8ÔøÑÀŒ-
+{squid:S3008"XRename this field "MIECHOW_RYNEK" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(§²“¾ıÿÿÿÿ8ÔøÑÀŒ-
+"squid:ClassVariableVisibilityCheck"dMake SENSOR_MIECHOW_KOPERNIKA a static final constant or non-public and provide accessors if needed.(Íõ§÷ÿÿÿÿÿ8ÔøÑÀŒ-
+Xsquid:S1444":Make this "public static SENSOR_MIECHOW_RYNEK" field final(õ Ş¹8ÔøÑÀŒ-
+nsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(¦—÷íıÿÿÿÿ8ÔøÑÀŒ-
+•"squid:ClassVariableVisibilityCheck"[Make MIECHOW_PARKOWE a static final constant or non-public and provide accessors if needed.(óÿ²›úÿÿÿÿ8‹ªƒÂŒ-
+squid:S3008"\Rename this field "MIECHOW_SZPITALNA" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(û§çüÿÿÿÿ8ÔøÑÀŒ-
+Vsquid:S1444"3Make this "public static MIECHOW_RYNEK" field final(§²“¾ıÿÿÿÿ8ÔøÑÀŒ-
 "squid:ClassVariableVisibilityCheck"SMake sensors a static final constant or non-public and provide accessors if needed.(ò€Çşÿÿÿÿ8ÔøÑÀŒ-
-Ysquid:S1444";Make this "public static SENSOR_MIECHOW_KROTKA" field final(·Éôæ8ÔøÑÀŒ-
-Rsquid:S1444"4Make this "public static MIECHOW_KROTKA" field final(è·şƒ8ÔøÑÀŒ-
+nsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ÓëÒâüÿÿÿÿ8ÔøÑÀŒ-
+wsquid:S3008"YRename this field "MIECHOW_KROTKA" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(è·şƒ8ÔøÑÀŒ-
+—"squid:ClassVariableVisibilityCheck"]Make MIECHOW_KOPERNIKA a static final constant or non-public and provide accessors if needed.(Ô¶ÒÆûÿÿÿÿ8ÔøÑÀŒ-
+_squid:S1444"<Make this "public static SENSOR_MIECHOW_PARKOWE" field final(™ñÕ‚ùÿÿÿÿ8‹ªƒÂŒ-
+–"squid:ClassVariableVisibilityCheck"aMake SENSOR_MIECHOW_KROTKA a static final constant or non-public and provide accessors if needed.(·Éôæ8ÔøÑÀŒ-
+"squid:ClassVariableVisibilityCheck"ZMake MIECHOW_KROTKA a static final constant or non-public and provide accessors if needed.(è·şƒ8ÔøÑÀŒ-
+isquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Şíª÷8ÔøÑÀŒ-
 ™"squid:ClassVariableVisibilityCheck"dMake SENSOR_MIECHOW_SZPITALNA a static final constant or non-public and provide accessors if needed.(ÏÂ§å8ÔøÑÀŒ-
 }squid:S3008"_Rename this field "SENSOR_MIECHOW_RYNEK" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(õ Ş¹8ÔøÑÀŒ-
-Psquid:S1444"-Make this "public static sensors" field final(ò€Çşÿÿÿÿ8ÔøÑÀŒ-
-œ"squid:ClassVariableVisibilityCheck"bMake SENSOR_MIECHOW_PARKOWE a static final constant or non-public and provide accessors if needed.(™ñÕ‚ùÿÿÿÿ8‹ªƒÂŒ-
-Vsquid:S1444"3Make this "public static MIECHOW_RYNEK" field final(§²“¾ıÿÿÿÿ8ÔøÑÀŒ-
 \squid:S1444">Make this "public static SENSOR_MIECHOW_SZPITALNA" field final(ÏÂ§å8ÔøÑÀŒ-
-Xsquid:S1444"5Make this "public static MIECHOW_PARKOWE" field final(óÿ²›úÿÿÿÿ8‹ªƒÂŒ-
-nsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ÓëÒâüÿÿÿÿ8ÔøÑÀŒ-
-Xsquid:S1444":Make this "public static SENSOR_MIECHOW_RYNEK" field final(õ Ş¹8ÔøÑÀŒ-
-†squid:S3008"cRename this field "SENSOR_MIECHOW_KOPERNIKA" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Íõ§÷ÿÿÿÿÿ8ÔøÑÀŒ-
-Wsquid:S1444"9Make this "public static MIECHOW_SIKORSKIEGO" field final(ÙãùĞ8ÔøÑÀŒ-
-[squid:UselessImportCheck"0Remove this unused import 'java.util.ArrayList'.(÷‰îƒ8ÔøÑÀŒ-
- "squid:ClassVariableVisibilityCheck"fMake SENSOR_MIECHOW_SIKORSKIEGO a static final constant or non-public and provide accessors if needed.(®¨åÿÿÿÿÿ8ÔøÑÀŒ-
-squid:S3008"cRename this field "SENSOR_MIECHOW_SZPITALNA" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÏÂ§å8ÔøÑÀŒ-
-}squid:S3008"ZRename this field "MIECHOW_PARKOWE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(óÿ²›úÿÿÿÿ8‹ªƒÂŒ-
-asquid:S1444">Make this "public static SENSOR_MIECHOW_KOPERNIKA" field final(Íõ§÷ÿÿÿÿÿ8ÔøÑÀŒ-
-{squid:S3008"XRename this field "MIECHOW_RYNEK" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(§²“¾ıÿÿÿÿ8ÔøÑÀŒ-
-“"squid:ClassVariableVisibilityCheck"YMake MIECHOW_RYNEK a static final constant or non-public and provide accessors if needed.(§²“¾ıÿÿÿÿ8ÔøÑÀŒ-
-nsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(¦—÷íıÿÿÿÿ8ÔøÑÀŒ-
-squid:S3008"\Rename this field "MIECHOW_SZPITALNA" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(û§çüÿÿÿÿ8ÔøÑÀŒ-
-—"squid:ClassVariableVisibilityCheck"]Make MIECHOW_SZPITALNA a static final constant or non-public and provide accessors if needed.(û§çüÿÿÿÿ8ÔøÑÀŒ-
-—"squid:ClassVariableVisibilityCheck"]Make MIECHOW_KOPERNIKA a static final constant or non-public and provide accessors if needed.(Ô¶ÒÆûÿÿÿÿ8ÔøÑÀŒ-
-"squid:ClassVariableVisibilityCheck"dMake SENSOR_MIECHOW_KOPERNIKA a static final constant or non-public and provide accessors if needed.(Íõ§÷ÿÿÿÿÿ8ÔøÑÀŒ-
-•"squid:ClassVariableVisibilityCheck"`Make SENSOR_MIECHOW_RYNEK a static final constant or non-public and provide accessors if needed.(õ Ş¹8ÔøÑÀŒ-
 [squid:UselessImportCheck"+Remove this unused import 'java.util.List'.(Õë±Äøÿÿÿÿ8ÔøÑÀŒ-
-–"squid:ClassVariableVisibilityCheck"aMake SENSOR_MIECHOW_KROTKA a static final constant or non-public and provide accessors if needed.(·Éôæ8ÔøÑÀŒ-
+•"squid:ClassVariableVisibilityCheck"`Make SENSOR_MIECHOW_RYNEK a static final constant or non-public and provide accessors if needed.(õ Ş¹8ÔøÑÀŒ-
+„squid:S3008"aRename this field "SENSOR_MIECHOW_PARKOWE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(™ñÕ‚ùÿÿÿÿ8‹ªƒÂŒ-
+Zsquid:S1444"7Make this "public static MIECHOW_SZPITALNA" field final(û§çüÿÿÿÿ8ÔøÑÀŒ-
+asquid:S1444">Make this "public static SENSOR_MIECHOW_KOPERNIKA" field final(Íõ§÷ÿÿÿÿÿ8ÔøÑÀŒ-
+}squid:S3008"ZRename this field "MIECHOW_PARKOWE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(óÿ²›úÿÿÿÿ8‹ªƒÂŒ-
+“"squid:ClassVariableVisibilityCheck"YMake MIECHOW_RYNEK a static final constant or non-public and provide accessors if needed.(§²“¾ıÿÿÿÿ8ÔøÑÀŒ-
+csquid:S1444"@Make this "public static SENSOR_MIECHOW_SIKORSKIEGO" field final(®¨åÿÿÿÿÿ8ÔøÑÀŒ-
+[squid:UselessImportCheck"0Remove this unused import 'java.util.ArrayList'.(÷‰îƒ8ÔøÑÀŒ-
 ”"squid:ClassVariableVisibilityCheck"_Make MIECHOW_SIKORSKIEGO a static final constant or non-public and provide accessors if needed.(ÙãùĞ8ÔøÑÀŒ-
+~squid:S3008"`Rename this field "SENSOR_MIECHOW_KROTKA" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(·Éôæ8ÔøÑÀŒ-
+Xsquid:S1444"5Make this "public static MIECHOW_PARKOWE" field final(óÿ²›úÿÿÿÿ8‹ªƒÂŒ-
+Rsquid:S1444"4Make this "public static MIECHOW_KROTKA" field final(è·şƒ8ÔøÑÀŒ-
+squid:S3008"\Rename this field "MIECHOW_KOPERNIKA" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ô¶ÒÆûÿÿÿÿ8ÔøÑÀŒ-
+Ysquid:S1444";Make this "public static SENSOR_MIECHOW_KROTKA" field final(·Éôæ8ÔøÑÀŒ-
+œ"squid:ClassVariableVisibilityCheck"bMake SENSOR_MIECHOW_PARKOWE a static final constant or non-public and provide accessors if needed.(™ñÕ‚ùÿÿÿÿ8‹ªƒÂŒ-
+Zsquid:S1444"7Make this "public static MIECHOW_KOPERNIKA" field final(Ô¶ÒÆûÿÿÿÿ8ÔøÑÀŒ-
+Esquid:S2386""Make member "sensors" "protected".(¢Ø»úÿÿÿÿ8ÔøÑÀŒ-
+squid:S3008"cRename this field "SENSOR_MIECHOW_SZPITALNA" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÏÂ§å8ÔøÑÀŒ-
+Wsquid:S1444"9Make this "public static MIECHOW_SIKORSKIEGO" field final(ÙãùĞ8ÔøÑÀŒ-
 ˆsquid:S3008"eRename this field "SENSOR_MIECHOW_SIKORSKIEGO" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(®¨åÿÿÿÿÿ8ÔøÑÀŒ-
+—"squid:ClassVariableVisibilityCheck"]Make MIECHOW_SZPITALNA a static final constant or non-public and provide accessors if needed.(û§çüÿÿÿÿ8ÔøÑÀŒ-
+ "squid:ClassVariableVisibilityCheck"fMake SENSOR_MIECHOW_SIKORSKIEGO a static final constant or non-public and provide accessors if needed.(®¨åÿÿÿÿÿ8ÔøÑÀŒ-
+Psquid:S1444"-Make this "public static sensors" field final(ò€Çşÿÿÿÿ8ÔøÑÀŒ-
+†squid:S3008"cRename this field "SENSOR_MIECHOW_KOPERNIKA" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Íõ§÷ÿÿÿÿÿ8ÔøÑÀŒ-

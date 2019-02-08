@@ -66,3 +66,9 @@ A
 gradlew.bat,2\a\2a45a911a8f1836b0b6c5b758962572012d8f8c3
 ?
 settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
+u
+Eapp/src/main/java/pl/tobzzo/miechowskiepowietrze/AirQualityIndex.java,a\b\abd9c9879c762b8ab5765dbfd54e49bbb2ea9437
+z
+Japp/src/main/java/pl/tobzzo/miechowskiepowietrze/connection/IonHelper.java,f\a\fa0f46446e83f08d2cf58c5533ce35e642f7ea37
+v
+Fapp/src/main/java/pl/tobzzo/miechowskiepowietrze/di/MpowComponent.java,f\6\f6dd4a3aa848d6f0823205113665c9873cfa30b2

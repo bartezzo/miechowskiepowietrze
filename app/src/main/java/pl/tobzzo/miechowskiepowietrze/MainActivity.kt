@@ -23,8 +23,9 @@ import com.google.android.gms.analytics.HitBuilders
 import com.google.android.gms.analytics.Tracker
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
-import com.koushikdutta.ion.Ion
 import com.orhanobut.logger.Logger
+import pl.tobzzo.miechowskiepowietrze.connection.IonHelper
+import pl.tobzzo.miechowskiepowietrze.di.component.ActivityComponent
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.bindView
 import pl.tobzzo.miechowskiepowietrze.rest.SensorMeasurementsResponse
 import java.text.ParseException
@@ -33,10 +34,12 @@ import java.util.ArrayList
 import java.util.Calendar
 import java.util.Date
 import java.util.HashMap
+import javax.inject.Inject
 
 
 class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
+//  @Inject lateinit var ionHelper: IonHelper
 
   private val swipeLayout: SwipeRefreshLayout by bindView(R.id.swipe_container)
   private val sensorLoadingProgress: ProgressBar by bindView(R.id.sensorLoadingProgress)
@@ -109,12 +112,20 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
       }
     }
 
+  private lateinit var activityComponent: ActivityComponent
+
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
 
-    setGoogleAnalytics()
+    activityComponent.inject(this)
+  }
 
+  override fun onPostCreate(savedInstanceState: Bundle?) {
+    super.onPostCreate(savedInstanceState)
+
+    setGoogleAnalytics()
     googleAnalyticsAction("action", "onCreate")
     setElements()
     setListeners()
@@ -396,17 +407,16 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
       return
 
     responseMap!!.remove(sensor.name)
-
-    Ion.with(this@MainActivity)
-      .load(url)
-      .addHeader("apikey", apiKey)
-      .asJsonObject()
-      .setCallback { e, result -> parseResult(result, sensor) }
-
+    val ionHelper = IonHelper()
+    ionHelper.getSmth(url, apiKey) {exception:Exception?, result: JsonObject -> parseResult(exception, result, sensor)}
   }
 
-  @Synchronized private fun parseResult(result: JsonObject, sensor: Sensor) {
+  @Synchronized private fun parseResult(exception: Exception?, result: JsonObject, sensor: Sensor) {
     try {
+      exception?.let {
+        Logger.d("ERROR original exception%s", exception)
+      }
+
       val gsonBuilder = GsonBuilder()
       val gson = gsonBuilder.create()
       val decoded = gson.fromJson(result, SensorMeasurementsResponse::class.java)
