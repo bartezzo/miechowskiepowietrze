@@ -25,7 +25,6 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
 import pl.tobzzo.miechowskiepowietrze.connection.IonHelper
-import pl.tobzzo.miechowskiepowietrze.di.component.ActivityComponent
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.bindView
 import pl.tobzzo.miechowskiepowietrze.rest.SensorMeasurementsResponse
 import java.text.ParseException
@@ -39,7 +38,7 @@ import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
-//  @Inject lateinit var ionHelper: IonHelper
+  @Inject lateinit var ionHelper: IonHelper
 
   private val swipeLayout: SwipeRefreshLayout by bindView(R.id.swipe_container)
   private val sensorLoadingProgress: ProgressBar by bindView(R.id.sensorLoadingProgress)
@@ -112,14 +111,12 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
       }
     }
 
-  private lateinit var activityComponent: ActivityComponent
-
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
 
-    activityComponent.inject(this)
+    MpowApp.getApp().appComponent.inject(this)
   }
 
   override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -407,7 +404,6 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
       return
 
     responseMap!!.remove(sensor.name)
-    val ionHelper = IonHelper()
     ionHelper.getSmth(url, apiKey) {exception:Exception?, result: JsonObject -> parseResult(exception, result, sensor)}
   }
 
