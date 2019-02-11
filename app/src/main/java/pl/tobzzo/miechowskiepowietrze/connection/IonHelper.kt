@@ -7,7 +7,7 @@ import com.koushikdutta.ion.Ion
 
 class IonHelper(private val context: Context) {
 
-  fun getSmth(url: String, apiKey: String,
+  fun readSensorValues(url: String, apiKey: String,
     callback: Function2<Exception?, JsonObject, Unit>) {
     Ion.with(context)
       .load(url)

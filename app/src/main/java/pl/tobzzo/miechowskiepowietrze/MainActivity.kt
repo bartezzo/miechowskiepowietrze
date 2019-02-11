@@ -27,6 +27,8 @@ import com.orhanobut.logger.Logger
 import pl.tobzzo.miechowskiepowietrze.connection.IonHelper
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.bindView
 import pl.tobzzo.miechowskiepowietrze.rest.SensorMeasurementsResponse
+import pl.tobzzo.miechowskiepowietrze.sensor.Sensor
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorMap
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.ArrayList
@@ -404,7 +406,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
       return
 
     responseMap!!.remove(sensor.name)
-    ionHelper.getSmth(url, apiKey) {exception:Exception?, result: JsonObject -> parseResult(exception, result, sensor)}
+    ionHelper.readSensorValues(url, apiKey) {exception:Exception?, result: JsonObject -> parseResult(exception, result, sensor)}
   }
 
   @Synchronized private fun parseResult(exception: Exception?, result: JsonObject, sensor: Sensor) {

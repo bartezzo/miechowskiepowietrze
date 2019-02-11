@@ -1,10 +1,9 @@
-package pl.tobzzo.miechowskiepowietrze;
+package pl.tobzzo.miechowskiepowietrze.sensor;
 
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import pl.tobzzo.miechowskiepowietrze.sensor.Sensor;
 
 public class SensorMap {
     public enum SensorType{REQ_MAP_POINT, REQ_SENSOR}
