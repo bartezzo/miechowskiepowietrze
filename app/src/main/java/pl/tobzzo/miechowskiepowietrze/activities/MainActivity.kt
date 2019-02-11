@@ -1,4 +1,4 @@
-package pl.tobzzo.miechowskiepowietrze
+package pl.tobzzo.miechowskiepowietrze.activities
 
 import android.os.Bundle
 import android.os.Handler
@@ -24,11 +24,29 @@ import com.google.android.gms.analytics.Tracker
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
-import pl.tobzzo.miechowskiepowietrze.connection.IonHelper
-import pl.tobzzo.miechowskiepowietrze.utils.extensions.bindView
+import pl.tobzzo.miechowskiepowietrze.AnalyticsApplication
+import pl.tobzzo.miechowskiepowietrze.BuildConfig
+import pl.tobzzo.miechowskiepowietrze.MpowApp
+import pl.tobzzo.miechowskiepowietrze.R.color
+import pl.tobzzo.miechowskiepowietrze.R.drawable
+import pl.tobzzo.miechowskiepowietrze.R.id
+import pl.tobzzo.miechowskiepowietrze.R.layout
+import pl.tobzzo.miechowskiepowietrze.connection.IonProvider
 import pl.tobzzo.miechowskiepowietrze.rest.SensorMeasurementsResponse
 import pl.tobzzo.miechowskiepowietrze.sensor.Sensor
-import pl.tobzzo.miechowskiepowietrze.sensor.SensorMap
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_KOPERNIKA
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_KROTKA
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_PARKOWE
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_RYNEK
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SIKORSKIEGO
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SREDNIA
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SZPITALNA
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorType
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorType.REQ_MAP_POINT
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorType.REQ_SENSOR
+import pl.tobzzo.miechowskiepowietrze.utils.extensions.bindView
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.ArrayList
@@ -40,62 +58,63 @@ import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
-  @Inject lateinit var ionHelper: IonHelper
+  @Inject lateinit var ionProvider: IonProvider
+  @Inject lateinit var sensorObject: SensorObject
 
-  private val swipeLayout: SwipeRefreshLayout by bindView(R.id.swipe_container)
-  private val sensorLoadingProgress: ProgressBar by bindView(R.id.sensorLoadingProgress)
-  private val sensorResultTable: TableLayout by bindView(R.id.sensorResultTable)
+  private val swipeLayout: SwipeRefreshLayout by bindView(id.swipe_container)
+  private val sensorLoadingProgress: ProgressBar by bindView(id.sensorLoadingProgress)
+  private val sensorResultTable: TableLayout by bindView(id.sensorResultTable)
 
-  private val sensorSikorskiego: TableRow by bindView(R.id.sensorSikorskiego)
-  private val sensorSikorskiegoProgress: NumberProgressBar by bindView(R.id.sensorSikorskiegoProgress)
-  private val sensorSikorskiegoDetailsPm25: TextView by bindView(R.id.sensorSikorskiegoDetailsPm25)
-  private val sensorSikorskiegoDetailsPm10: TextView by bindView(R.id.sensorSikorskiegoDetailsPm10)
-  private val sensorSikorskiegoLegend: ImageView by bindView(R.id.sensorSikorskiegoLegend)
-  private val sensorSikorskiegoHistory: TableRow by bindView(R.id.sensorSikorskiegoHistory)
-  private val sensorSikorskiegoHistoryChart: BarChart by bindView(R.id.sensorSikorskiegoHistoryChart)
+  private val sensorSikorskiego: TableRow by bindView(id.sensorSikorskiego)
+  private val sensorSikorskiegoProgress: NumberProgressBar by bindView(id.sensorSikorskiegoProgress)
+  private val sensorSikorskiegoDetailsPm25: TextView by bindView(id.sensorSikorskiegoDetailsPm25)
+  private val sensorSikorskiegoDetailsPm10: TextView by bindView(id.sensorSikorskiegoDetailsPm10)
+  private val sensorSikorskiegoLegend: ImageView by bindView(id.sensorSikorskiegoLegend)
+  private val sensorSikorskiegoHistory: TableRow by bindView(id.sensorSikorskiegoHistory)
+  private val sensorSikorskiegoHistoryChart: BarChart by bindView(id.sensorSikorskiegoHistoryChart)
 
-  private val sensorRynek: TableRow by bindView(R.id.sensorRynek)
-  private val sensorRynekProgress: NumberProgressBar by bindView(R.id.sensorRynekProgress)
-  private val sensorRynekDetailsPm25: TextView by bindView(R.id.sensorRynekDetailsPm25)
-  private val sensorRynekDetailsPm10: TextView by bindView(R.id.sensorRynekDetailsPm10)
-  private val sensorRynekLegend: ImageView by bindView(R.id.sensorRynekLegend)
-  private val sensorRynekHistory: TableRow by bindView(R.id.sensorRynekHistory)
-  private val sensorRynekHistoryChart: BarChart by bindView(R.id.sensorRynekHistoryChart)
+  private val sensorRynek: TableRow by bindView(id.sensorRynek)
+  private val sensorRynekProgress: NumberProgressBar by bindView(id.sensorRynekProgress)
+  private val sensorRynekDetailsPm25: TextView by bindView(id.sensorRynekDetailsPm25)
+  private val sensorRynekDetailsPm10: TextView by bindView(id.sensorRynekDetailsPm10)
+  private val sensorRynekLegend: ImageView by bindView(id.sensorRynekLegend)
+  private val sensorRynekHistory: TableRow by bindView(id.sensorRynekHistory)
+  private val sensorRynekHistoryChart: BarChart by bindView(id.sensorRynekHistoryChart)
 
-  private val sensorKopernika: TableRow by bindView(R.id.sensorKopernika)
-  private val sensorKopernikaProgress: NumberProgressBar by bindView(R.id.sensorKopernikaProgress)
-  private val sensorKopernikaDetailsPm25: TextView by bindView(R.id.sensorKopernikaDetailsPm25)
-  private val sensorKopernikaDetailsPm10: TextView by bindView(R.id.sensorKopernikaDetailsPm10)
-  private val sensorKopernikaLegend: ImageView by bindView(R.id.sensorKopernikaLegend)
-  private val sensorKopernikaHistory: TableRow by bindView(R.id.sensorKopernikaHistory)
-  private val sensorKopernikaHistoryChart: BarChart by bindView(R.id.sensorKopernikaHistoryChart)
+  private val sensorKopernika: TableRow by bindView(id.sensorKopernika)
+  private val sensorKopernikaProgress: NumberProgressBar by bindView(id.sensorKopernikaProgress)
+  private val sensorKopernikaDetailsPm25: TextView by bindView(id.sensorKopernikaDetailsPm25)
+  private val sensorKopernikaDetailsPm10: TextView by bindView(id.sensorKopernikaDetailsPm10)
+  private val sensorKopernikaLegend: ImageView by bindView(id.sensorKopernikaLegend)
+  private val sensorKopernikaHistory: TableRow by bindView(id.sensorKopernikaHistory)
+  private val sensorKopernikaHistoryChart: BarChart by bindView(id.sensorKopernikaHistoryChart)
 
-  private val sensorParkowe: TableRow by bindView(R.id.sensorParkowe)
-  private val sensorParkoweProgress: NumberProgressBar by bindView(R.id.sensorParkoweProgress)
-  private val sensorParkoweDetailsPm25: TextView by bindView(R.id.sensorParkoweDetailsPm25)
-  private val sensorParkoweDetailsPm10: TextView by bindView(R.id.sensorParkoweDetailsPm10)
-  private val sensorParkoweLegend: ImageView by bindView(R.id.sensorParkoweLegend)
-  private val sensorParkoweHistory: TableRow by bindView(R.id.sensorParkoweHistory)
-  private val sensorParkoweHistoryChart: BarChart by bindView(R.id.sensorParkoweHistoryChart)
+  private val sensorParkowe: TableRow by bindView(id.sensorParkowe)
+  private val sensorParkoweProgress: NumberProgressBar by bindView(id.sensorParkoweProgress)
+  private val sensorParkoweDetailsPm25: TextView by bindView(id.sensorParkoweDetailsPm25)
+  private val sensorParkoweDetailsPm10: TextView by bindView(id.sensorParkoweDetailsPm10)
+  private val sensorParkoweLegend: ImageView by bindView(id.sensorParkoweLegend)
+  private val sensorParkoweHistory: TableRow by bindView(id.sensorParkoweHistory)
+  private val sensorParkoweHistoryChart: BarChart by bindView(id.sensorParkoweHistoryChart)
 
-  private val sensorSzpitalna: TableRow by bindView(R.id.sensorSzpitalna)
-  private val sensorSzpitalnaProgress: NumberProgressBar by bindView(R.id.sensorSzpitalnaProgress)
-  private val sensorSzpitalnaDetailsPm25: TextView by bindView(R.id.sensorSzpitalnaDetailsPm25)
-  private val sensorSzpitalnaDetailsPm10: TextView by bindView(R.id.sensorSzpitalnaDetailsPm10)
-  private val sensorSzpitalnaLegend: ImageView by bindView(R.id.sensorSzpitalnaLegend)
-  private val sensorSzpitalnaHistory: TableRow by bindView(R.id.sensorSzpitalnaHistory)
-  private val sensorSzpitalnaHistoryChart: BarChart by bindView(R.id.sensorSzpitalnaHistoryChart)
+  private val sensorSzpitalna: TableRow by bindView(id.sensorSzpitalna)
+  private val sensorSzpitalnaProgress: NumberProgressBar by bindView(id.sensorSzpitalnaProgress)
+  private val sensorSzpitalnaDetailsPm25: TextView by bindView(id.sensorSzpitalnaDetailsPm25)
+  private val sensorSzpitalnaDetailsPm10: TextView by bindView(id.sensorSzpitalnaDetailsPm10)
+  private val sensorSzpitalnaLegend: ImageView by bindView(id.sensorSzpitalnaLegend)
+  private val sensorSzpitalnaHistory: TableRow by bindView(id.sensorSzpitalnaHistory)
+  private val sensorSzpitalnaHistoryChart: BarChart by bindView(id.sensorSzpitalnaHistoryChart)
 
-  private val sensorKrotka: TableRow by bindView(R.id.sensorKrotka)
-  private val sensorKrotkaProgress: NumberProgressBar by bindView(R.id.sensorKrotkaProgress)
-  private val sensorKrotkaDetailsPm25: TextView by bindView(R.id.sensorKrotkaDetailsPm25)
-  private val sensorKrotkaDetailsPm10: TextView by bindView(R.id.sensorKrotkaDetailsPm10)
-  private val sensorKrotkaLegend: ImageView by bindView(R.id.sensorKrotkaLegend)
-  private val sensorKrotkaHistory: TableRow by bindView(R.id.sensorKrotkaHistory)
-  private val sensorKrotkaHistoryChart: BarChart by bindView(R.id.sensorKrotkaHistoryChart)
+  private val sensorKrotka: TableRow by bindView(id.sensorKrotka)
+  private val sensorKrotkaProgress: NumberProgressBar by bindView(id.sensorKrotkaProgress)
+  private val sensorKrotkaDetailsPm25: TextView by bindView(id.sensorKrotkaDetailsPm25)
+  private val sensorKrotkaDetailsPm10: TextView by bindView(id.sensorKrotkaDetailsPm10)
+  private val sensorKrotkaLegend: ImageView by bindView(id.sensorKrotkaLegend)
+  private val sensorKrotkaHistory: TableRow by bindView(id.sensorKrotkaHistory)
+  private val sensorKrotkaHistoryChart: BarChart by bindView(id.sensorKrotkaHistoryChart)
 
-  private val airQualityImageView: ImageView by bindView(R.id.airQualityImageView)
-  private val sensorsScrollView: ScrollView by bindView(R.id.sensorsScrollView)
+  private val airQualityImageView: ImageView by bindView(id.airQualityImageView)
+  private val sensorsScrollView: ScrollView by bindView(id.sensorsScrollView)
 
   private var httpHandler: Handler? = null
   private var fakeCAQI = -1
@@ -116,7 +135,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main)
+    setContentView(layout.activity_main)
 
     MpowApp.getApp().appComponent.inject(this)
   }
@@ -124,10 +143,29 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
   override fun onPostCreate(savedInstanceState: Bundle?) {
     super.onPostCreate(savedInstanceState)
 
+    initSensors()
     setGoogleAnalytics()
     googleAnalyticsAction("action", "onCreate")
     setElements()
     setListeners()
+  }
+
+  private fun initSensors() {
+
+    var SENSOR_MIECHOW_SREDNIA = Sensor(-1, MIECHOW_SREDNIA, "50.356486", "20.027900", SensorType.REQ_MAP_POINT)
+    var SENSOR_MIECHOW_SIKORSKIEGO = Sensor(336, MIECHOW_SIKORSKIEGO, "50.352787", "20.019735", SensorType.REQ_MAP_POINT)
+    var SENSOR_MIECHOW_RYNEK = Sensor(340, MIECHOW_RYNEK, "50.3568", "20.028696", SensorType.REQ_MAP_POINT)
+    var SENSOR_MIECHOW_KOPERNIKA = Sensor(341, MIECHOW_KOPERNIKA, "50.360233", "20.026752", SensorType.REQ_MAP_POINT)
+    var SENSOR_MIECHOW_PARKOWE = Sensor(342, MIECHOW_PARKOWE, "50.359778999999996", "20.040627999999998", SensorType.REQ_MAP_POINT)
+    var SENSOR_MIECHOW_SZPITALNA = Sensor(343, MIECHOW_SZPITALNA, "50.355094", "20.035085", SensorType.REQ_MAP_POINT)
+    var SENSOR_MIECHOW_KROTKA = Sensor(344, MIECHOW_KROTKA, "50.355613", "20.013966999999997", SensorType.REQ_MAP_POINT)
+
+    sensorObject.addSensor(SENSOR_MIECHOW_SIKORSKIEGO)
+    sensorObject.addSensor(SENSOR_MIECHOW_RYNEK)
+    sensorObject.addSensor(SENSOR_MIECHOW_KOPERNIKA)
+    sensorObject.addSensor(SENSOR_MIECHOW_PARKOWE)
+    sensorObject.addSensor(SENSOR_MIECHOW_SZPITALNA)
+    sensorObject.addSensor(SENSOR_MIECHOW_KROTKA)
   }
 
   private fun setElements() {
@@ -207,13 +245,13 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
   private fun listSensorsMeasurements() {
     var url: String? = null
-    val iterator = SensorMap.getSensors().entries.iterator()
+    val iterator = sensorObject.sensors.entries.iterator()
     while (iterator.hasNext()) {
       val sensorEntry = iterator.next()
       val sensor = sensorEntry.value
-      if (sensor.type == SensorMap.SensorType.REQ_MAP_POINT) {
+      if (sensor.type == REQ_MAP_POINT) {
         url = String.format(URL_REQ_MAP_POINT, sensor.gpsLatitude, sensor.gpsLongitude)
-      } else if (sensor.type == SensorMap.SensorType.REQ_SENSOR) {
+      } else if (sensor.type == REQ_SENSOR) {
         url = String.format(URL_REQ_SENSOR, sensor.id)
       }
 
@@ -230,7 +268,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
     var countCAQI = 0
 
     while (iterator.hasNext()) {
-      val entry = iterator.next() as Map.Entry<String, SensorMeasurementsResponse>
+      val entry = iterator.next() as Map.Entry<SensorPlace, SensorMeasurementsResponse>
       val CAQI = entry.value.currentMeasurements.airQualityIndex
       maxCAQI = Math.max(maxCAQI, CAQI)
       sumCAQI += CAQI
@@ -241,7 +279,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
     iterator = responseMap!!.entries.iterator()
     while (iterator.hasNext()) {
-      val entry = iterator.next() as Map.Entry<String, SensorMeasurementsResponse>
+      val entry = iterator.next() as Map.Entry<SensorPlace, SensorMeasurementsResponse>
       val sensorName = entry.key
       val sensorValues = entry.value
       var progressToUpdate: NumberProgressBar? = null
@@ -250,41 +288,44 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
       var chartViewToUpdate: BarChart? = null
 
       when (sensorName) {
-        SensorMap.MIECHOW_SIKORSKIEGO -> {
+        MIECHOW_SIKORSKIEGO -> {
           progressToUpdate = sensorSikorskiegoProgress
           textViewToUpdatePm25 = sensorSikorskiegoDetailsPm25
           textViewToUpdatePm10 = sensorSikorskiegoDetailsPm10
           chartViewToUpdate = sensorSikorskiegoHistoryChart
         }
-        SensorMap.MIECHOW_RYNEK -> {
+        MIECHOW_RYNEK -> {
           progressToUpdate = sensorRynekProgress
           textViewToUpdatePm25 = sensorRynekDetailsPm25
           textViewToUpdatePm10 = sensorRynekDetailsPm10
           chartViewToUpdate = sensorRynekHistoryChart
         }
-        SensorMap.MIECHOW_KOPERNIKA -> {
+        MIECHOW_KOPERNIKA -> {
           progressToUpdate = sensorKopernikaProgress
           textViewToUpdatePm25 = sensorKopernikaDetailsPm25
           textViewToUpdatePm10 = sensorKopernikaDetailsPm10
           chartViewToUpdate = sensorKopernikaHistoryChart
         }
-        SensorMap.MIECHOW_PARKOWE -> {
+        MIECHOW_PARKOWE -> {
           progressToUpdate = sensorParkoweProgress
           textViewToUpdatePm25 = sensorParkoweDetailsPm25
           textViewToUpdatePm10 = sensorParkoweDetailsPm10
           chartViewToUpdate = sensorParkoweHistoryChart
         }
-        SensorMap.MIECHOW_SZPITALNA -> {
+        MIECHOW_SZPITALNA -> {
           progressToUpdate = sensorSzpitalnaProgress
           textViewToUpdatePm25 = sensorSzpitalnaDetailsPm25
           textViewToUpdatePm10 = sensorSzpitalnaDetailsPm10
           chartViewToUpdate = sensorSzpitalnaHistoryChart
         }
-        SensorMap.MIECHOW_KROTKA -> {
+        MIECHOW_KROTKA -> {
           progressToUpdate = sensorKrotkaProgress
           textViewToUpdatePm25 = sensorKrotkaDetailsPm25
           textViewToUpdatePm10 = sensorKrotkaDetailsPm10
           chartViewToUpdate = sensorKrotkaHistoryChart
+        }
+        else -> {
+          throw Exception("Wrong sensor passed")
         }
       }
 
@@ -301,7 +342,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
     airQualityImageView.setImageResource(getLogoImage(avgCAQI))
   }
 
-  private fun setDetailsInfo(entry: Map.Entry<String, SensorMeasurementsResponse>, textViewToUpdatePm25: TextView,
+  private fun setDetailsInfo(entry: Map.Entry<SensorPlace, SensorMeasurementsResponse>, textViewToUpdatePm25: TextView,
     textViewToUpdatePm10: TextView, chartViewToUpdate: BarChart?) {
     val patternPm25 = "%1\$s%% (pm 2.5)"
     val patternPm10 = "%1\$s%% (pm  10)"
@@ -315,7 +356,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
     showHistoryChart(chartViewToUpdate, entry)
   }
 
-  private fun showHistoryChart(chartViewToUpdate: BarChart?, entry: Map.Entry<String, SensorMeasurementsResponse>) {
+  private fun showHistoryChart(chartViewToUpdate: BarChart?, entry: Map.Entry<SensorPlace, SensorMeasurementsResponse>) {
     val entries = ArrayList<BarEntry>()
     val entriesColor = ArrayList<Int>()
 
@@ -381,23 +422,23 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
   private fun getProgressColor(airQualityIndex: Int): Int {
     return when {
-      airQualityIndex >= 100 -> resources.getColor(R.color.caqiVeryHigh)
-      airQualityIndex >= 75 -> resources.getColor(R.color.caqiHigh)
-      airQualityIndex >= 50 -> resources.getColor(R.color.caqiMedium)
-      airQualityIndex >= 25 -> resources.getColor(R.color.caqiLow)
-      airQualityIndex >= 0 -> resources.getColor(R.color.caqiVeryLow)
-      else -> resources.getColor(R.color.caqiUnknown)
+      airQualityIndex >= 100 -> resources.getColor(color.caqiVeryHigh)
+      airQualityIndex >= 75 -> resources.getColor(color.caqiHigh)
+      airQualityIndex >= 50 -> resources.getColor(color.caqiMedium)
+      airQualityIndex >= 25 -> resources.getColor(color.caqiLow)
+      airQualityIndex >= 0 -> resources.getColor(color.caqiVeryLow)
+      else -> resources.getColor(color.caqiUnknown)
     }
   }
 
   private fun getLogoImage(airQualityIndex: Double): Int {
     return when {
-      airQualityIndex >= 100 -> R.drawable.explosion_123690_640
-      airQualityIndex >= 75 -> R.drawable.industry_611668_640
-      airQualityIndex >= 50 -> R.drawable.storm_clouds_1967017_640
-      airQualityIndex >= 25 -> R.drawable.barn_1302114_640
-      airQualityIndex >= 0 -> R.drawable.clouds_1552166_640
-      else -> R.drawable.question_mark_1421013_640
+      airQualityIndex >= 100 -> drawable.explosion_123690_640
+      airQualityIndex >= 75 -> drawable.industry_611668_640
+      airQualityIndex >= 50 -> drawable.storm_clouds_1967017_640
+      airQualityIndex >= 25 -> drawable.barn_1302114_640
+      airQualityIndex >= 0 -> drawable.clouds_1552166_640
+      else -> drawable.question_mark_1421013_640
     }
   }
 
@@ -406,7 +447,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
       return
 
     responseMap!!.remove(sensor.name)
-    ionHelper.readSensorValues(url, apiKey) {exception:Exception?, result: JsonObject -> parseResult(exception, result, sensor)}
+    ionProvider.readSensorValues(url, apiKey) {exception:Exception?, result: JsonObject -> parseResult(exception, result, sensor)}
   }
 
   @Synchronized private fun parseResult(exception: Exception?, result: JsonObject, sensor: Sensor) {
@@ -435,10 +476,8 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
     val iterator = responseMap!!.entries.iterator()
     while (iterator.hasNext()) {
-      val responseEntry = iterator.next() as Map.Entry<String, SensorMeasurementsResponse>
-      if (responseEntry.value != null) {
-        responses++
-      }
+      iterator.next()
+      responses++
     }
 
     if (responses < calls) {
@@ -499,15 +538,12 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
   }
 
   companion object {
-    //    private static String API_KEY1 = "3e0d2eba4cad490c8aa95f3b536ce4c8";
-    //    private static String API_KEY2 = "58ea136e60db4a11a08826a73fdbe358";
-    //    private static String REQ_MAP_POINT = "https://airapi.airly.eu/v1/mapPoint/measurements?latitude=50.356486&longitude=20.027900";
     private val URL_REQ_MAP_POINT = "https://airapi.airly.eu/v1/mapPoint/measurements?latitude=%1\$s&longitude=%2\$s"
     private val URL_REQ_SENSOR = "https://airapi.airly.eu/v1/sensor/measurements?sensorId=%1\$s"
     private val PM25_STANDARD = 25.0
     private val PM10_STANDARD = 50.0
     private val animationTimeInMs = 500
-    private var responseMap: MutableMap<String, SensorMeasurementsResponse>? = null
+    private var responseMap: MutableMap<SensorPlace, SensorMeasurementsResponse>? = null
     private var lastLoading: Long = 0
   }
 }

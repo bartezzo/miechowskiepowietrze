@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/mainBgColor"
 
-    tools:context="pl.tobzzo.miechowskiepowietrze.MainActivity">
+    tools:context="pl.tobzzo.miechowskiepowietrze.activities.MainActivity">
 
     <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/swipe_container"
