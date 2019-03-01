@@ -25,7 +25,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import pl.tobzzo.miechowskiepowietrze.AnalyticsApplication
 import pl.tobzzo.miechowskiepowietrze.BuildConfig
-import pl.tobzzo.miechowskiepowietrze.MpowApp
+import pl.tobzzo.miechowskiepowietrze.MpowApplication
 import pl.tobzzo.miechowskiepowietrze.R.color
 import pl.tobzzo.miechowskiepowietrze.R.drawable
 import pl.tobzzo.miechowskiepowietrze.R.id
@@ -137,7 +137,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
     super.onCreate(savedInstanceState)
     setContentView(layout.activity_main)
 
-    MpowApp.getApp().appComponent.inject(this)
+    (this.application as MpowApplication).appComponent.inject(this)
   }
 
   override fun onPostCreate(savedInstanceState: Bundle?) {

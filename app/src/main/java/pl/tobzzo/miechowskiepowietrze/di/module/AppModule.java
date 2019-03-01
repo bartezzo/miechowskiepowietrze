@@ -11,25 +11,34 @@ import pl.tobzzo.miechowskiepowietrze.logging.MpowLoggingManager;
 import pl.tobzzo.miechowskiepowietrze.sensor.MpowSensorObject;
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject;
 
-@Module public class AppModule {
-  private Context context;
+@Module
+public class AppModule {
+  protected Context context;
 
   public AppModule(Context context) {
     this.context = context;
   }
 
-  @Singleton @Provides public Context provideContext() {
+  @Provides
+  @Singleton
+  public Context provideContext() {
     return context;
   }
 
-  @Singleton @Provides public IonProvider provideIonProvider(Context context) {
+  @Provides
+  @Singleton
+  public IonProvider provideIonProvider(Context context) {
     return new MpowIonProvider(context);
   }
 
-  @Singleton @Provides public SensorObject provideSensorObject() {
+  @Provides
+  @Singleton
+  public SensorObject provideSensorObject() {
     return new MpowSensorObject();
   }
 
-  @Singleton @Provides public LoggingManager provideLoggingManager() { return new MpowLoggingManager(context); }
-  
+  @Provides
+  @Singleton
+  public LoggingManager provideLoggingManager() { return new MpowLoggingManager(context); }
+
 }
