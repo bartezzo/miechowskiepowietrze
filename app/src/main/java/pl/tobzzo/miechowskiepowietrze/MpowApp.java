@@ -5,6 +5,7 @@ import pl.tobzzo.miechowskiepowietrze.di.component.DaggerAppComponent;
 import pl.tobzzo.miechowskiepowietrze.di.module.AppModule;
 
 public class MpowApp extends AnalyticsApplication {
+
   private static MpowApp app;
   private AppModule appModule;
   private AppComponent appComponent;

@@ -23,7 +23,6 @@ import com.google.android.gms.analytics.HitBuilders
 import com.google.android.gms.analytics.Tracker
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
-import com.orhanobut.logger.Logger
 import pl.tobzzo.miechowskiepowietrze.AnalyticsApplication
 import pl.tobzzo.miechowskiepowietrze.BuildConfig
 import pl.tobzzo.miechowskiepowietrze.MpowApp
@@ -47,6 +46,7 @@ import pl.tobzzo.miechowskiepowietrze.sensor.SensorType
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorType.REQ_MAP_POINT
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorType.REQ_SENSOR
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.bindView
+import timber.log.Timber
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.ArrayList
@@ -128,7 +128,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
         BuildConfig.hiddenPassword2
         ).also {
         googleAnalyticsAction("getApiKey", it)
-        Logger.d("api key:%s", it)
+        Timber.d("api key:$it")
       }
     }
 
@@ -381,7 +381,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
         calendar.time = date
         hour = calendar.get(Calendar.HOUR_OF_DAY)
       } catch (e: ParseException) {
-        Logger.e("Error parsing date from %s", fromDate)
+        Timber.e("Error parsing date from $fromDate")
       }
 
       entries.add(BarEntry(i.toFloat(), Math.round(caqi).toInt().toFloat(), hour))
@@ -453,7 +453,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
   @Synchronized private fun parseResult(exception: Exception?, result: JsonObject, sensor: Sensor) {
     try {
       exception?.let {
-        Logger.d("ERROR original exception%s", exception)
+        Timber.e(exception,"parseResult ERROR original exception")
       }
 
       val gsonBuilder = GsonBuilder()
@@ -465,7 +465,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
       tryToShowResult()
     } catch (ex: Exception) {
-      Logger.d("ERROR %s", ex.toString())
+      Timber.e(ex, "parseResult ERROR")
     }
 
   }

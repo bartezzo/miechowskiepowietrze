@@ -72,11 +72,11 @@ Japp/src/main/java/pl/tobzzo/miechowskiepowietrze/connection/IonProvider.kt,7\4
 Napp/src/main/java/pl/tobzzo/miechowskiepowietrze/connection/MpowIonProvider.kt,7\5\751ff89365ebf8f9d36983b6531f154466863fd1
 {
 Kapp/src/main/java/pl/tobzzo/miechowskiepowietrze/sensor/MpowSensorObject.kt,e\9\e96d424f11995a8e12abb2939edec702120e8254
-x
-Happ/src/main/java/pl/tobzzo/miechowskiepowietrze/AnalyticsApplication.kt,a\0\a00bf61013f85437634f1af5e43c5361fb3491be
 {
 Kapp/src/main/java/pl/tobzzo/miechowskiepowietrze/activities/MainActivity.kt,7\7\773d71f333b1d6919bc61cd322d807512770c861
-k
-;app/src/main/java/pl/tobzzo/miechowskiepowietrze/MpowApp.kt,9\5\95df0f4f41e632dc1b6b3d85f40d3eec45dc9d9e
 
 Oapp/src/main/java/pl/tobzzo/miechowskiepowietrze/di/component/AppComponent.java,7\2\7206da1a9f9fd0f540712b251d336da2d8b63fda
+z
+Japp/src/main/java/pl/tobzzo/miechowskiepowietrze/AnalyticsApplication.java,5\5\55a919e16df79555b1e989a1a96f270916ca6291
+m
+=app/src/main/java/pl/tobzzo/miechowskiepowietrze/MpowApp.java,b\7\b755979695bd52c4b06fcbbc30965b48be140e9d

@@ -6,6 +6,8 @@ import dagger.Provides;
 import javax.inject.Singleton;
 import pl.tobzzo.miechowskiepowietrze.connection.IonProvider;
 import pl.tobzzo.miechowskiepowietrze.connection.MpowIonProvider;
+import pl.tobzzo.miechowskiepowietrze.logging.LoggingManager;
+import pl.tobzzo.miechowskiepowietrze.logging.MpowLoggingManager;
 import pl.tobzzo.miechowskiepowietrze.sensor.MpowSensorObject;
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject;
 
@@ -27,4 +29,7 @@ import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject;
   @Singleton @Provides public SensorObject provideSensorObject() {
     return new MpowSensorObject();
   }
+
+  @Singleton @Provides public LoggingManager provideLoggingManager() { return new MpowLoggingManager(context); }
+  
 }
