@@ -2,13 +2,13 @@ package pl.tobzzo.miechowskiepowietrze.di.module;
 
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Singleton;
 import pl.tobzzo.miechowskiepowietrze.database.DataBaseManager;
 import pl.tobzzo.miechowskiepowietrze.database.MpowDataBaseManager;
+import pl.tobzzo.miechowskiepowietrze.di.SensorScope;
 
 @Module
 public class SensorModule {
   @Provides
-  //@Singleton
+  @SensorScope
   public DataBaseManager provideDataBaseManager() { return new MpowDataBaseManager(); }
 }
