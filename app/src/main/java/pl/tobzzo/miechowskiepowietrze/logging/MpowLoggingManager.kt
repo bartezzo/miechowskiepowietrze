@@ -2,10 +2,13 @@ package pl.tobzzo.miechowskiepowietrze.logging
 
 import android.content.Context
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.Locale
 
-class MpowLoggingManager(private val context: Context): LoggingManager{
-  private val debugTree = LogcatTree()
-  private val mpowTree = MpowTree()
+const val DATE_FORMAT = "ddMMyyyy'T'HHmmss'Z'"
+class MpowLoggingManager(context: Context) : LoggingManager{
+  private val debugTree = LogcatTree(formatter = MpowFormatter())
+  private val mpowTree = MpowTree(context = context, formatter = MpowFormatter(), dateFormat = SimpleDateFormat(DATE_FORMAT, Locale.getDefault()))
 
   init {
     initialize()

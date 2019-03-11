@@ -1,5 +1,3 @@
 package pl.tobzzo.miechowskiepowietrze.logging
 
-class LogcatTree() : BaseLoggingTree() {
-
-}
+class LogcatTree(formatter : TimberFormatter) : BaseLoggingTree(formatter)
