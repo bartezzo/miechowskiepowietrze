@@ -10,10 +10,6 @@ class MpowLoggingManager(context: Context) : LoggingManager{
   private val debugTree = LogcatTree(formatter = MpowFormatter())
   private val mpowTree = MpowTree(context = context, formatter = MpowFormatter(), dateFormat = SimpleDateFormat(DATE_FORMAT, Locale.getDefault()))
 
-  init {
-    initialize()
-  }
-
   override fun initialize() {
     plantTrees()
   }

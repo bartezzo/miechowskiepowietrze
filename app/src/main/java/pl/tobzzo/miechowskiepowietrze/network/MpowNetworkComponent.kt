@@ -1,0 +1,149 @@
+package pl.tobzzo.miechowskiepowietrze.network
+
+import android.content.Context
+import android.view.View
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
+import pl.tobzzo.miechowskiepowietrze.BuildConfig
+import pl.tobzzo.miechowskiepowietrze.MpowApplication
+import pl.tobzzo.miechowskiepowietrze.activities.MainActivity.Companion
+import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
+import pl.tobzzo.miechowskiepowietrze.connection.IonProvider
+import pl.tobzzo.miechowskiepowietrze.rest.SensorMeasurementsResponse
+import pl.tobzzo.miechowskiepowietrze.sensor.Sensor
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorType.REQ_MAP_POINT
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorType.REQ_SENSOR
+import timber.log.Timber
+import java.util.HashMap
+import javax.inject.Inject
+
+
+private const val URL_REQ_MAP_POINT = "https://airapi.airly.eu/v1/mapPoint/measurements?latitude=%1\$s&longitude=%2\$s"
+private const val URL_REQ_SENSOR = "https://airapi.airly.eu/v1/sensor/measurements?sensorId=%1\$s"
+
+class MpowNetworkComponent(private val context: Context) : NetworkComponent{
+  @Inject lateinit var ionProvider: IonProvider
+  @Inject lateinit var analyticsComponent: AnalyticsComponent
+  @Inject lateinit var sensorObject: SensorObject
+
+  private var responseMap: MutableMap<SensorPlace, SensorMeasurementsResponse>? = null
+  private val listeners = mutableListOf<NetworkListener>()
+  private var lastLoading: Long = 0
+  private val apiKey: String
+    get() {
+      return (if (System.currentTimeMillis() % 2 == 0L)
+        BuildConfig.hiddenPassword1
+      else
+        BuildConfig.hiddenPassword2
+        ).also {
+        analyticsComponent.logAction("logAction", "onCreate")
+        Timber.d("api key:$it")
+      }
+    }
+
+  override fun initialize() {
+    (context as MpowApplication).appComponent.inject(this)
+  }
+
+  override fun makeHttpRequest(url: String?, sensor: Sensor) {
+    if (url == null)
+      return
+
+    responseMap!!.remove(sensor.name)
+    ionProvider.readSensorValues(url, apiKey) {exception:Exception?, result: JsonObject -> parseResult(exception, result, sensor)}
+  }
+
+  override fun restartLoading(forceRefresh: Boolean) {
+    analyticsComponent.logAction("logAction", "restartLoading")
+
+      if (forceRefresh)
+        lastLoading = 0
+
+      if (System.currentTimeMillis() - lastLoading < 30 * 60 * 1000) {
+        showResult()
+      } else {
+        lastLoading = System.currentTimeMillis()
+        responseMap = HashMap()
+//        httpHandler!!.postDelayed({ listSensorsMeasurements() }, (2 * 1000).toLong())
+        listSensorsMeasurements()
+       listeners.forEach {
+         it.onValuesLoading()
+       }
+      }
+  }
+
+  override fun getResponseMap(): MutableMap<SensorPlace, SensorMeasurementsResponse>? {
+    return responseMap
+  }
+
+  override fun attachNetworkListener(listener: NetworkListener) {
+    listeners.add(listener)
+  }
+
+  override fun detachNetworkListener(listener: NetworkListener) {
+    listeners.remove(listener)
+  }
+
+  @Synchronized private fun parseResult(exception: Exception?, result: JsonObject, sensor: Sensor) {
+    try {
+      exception?.let {
+        Timber.e(exception,"parseResult ERROR original exception")
+      }
+
+      val gsonBuilder = GsonBuilder()
+      val gson = gsonBuilder.create()
+      val decoded = gson.fromJson(result, SensorMeasurementsResponse::class.java)
+      val isDecoded = SensorMeasurementsResponse::class.java.isInstance(decoded)
+      val sensorMeasurementsResponse = decoded as SensorMeasurementsResponse
+      responseMap!![sensor.name] = sensorMeasurementsResponse
+
+      tryToShowResult()
+    } catch (ex: Exception) {
+      Timber.e(ex, "parseResult ERROR")
+    }
+  }
+
+  private fun tryToShowResult() {
+    val calls = responseMap!!.size
+    var responses = 0
+
+    val iterator = responseMap!!.entries.iterator()
+    while (iterator.hasNext()) {
+      iterator.next()
+      responses++
+    }
+
+    if (responses < calls) {
+      Timber.d("tryToShowResult only $responses available (calls=$calls)")
+    } else {
+      Timber.d("tryToShowResult all $responses available (calls=$calls)")
+      showResult()
+    }
+  }
+
+  private fun showResult() {
+    analyticsComponent.logAction("logAction", "showResult")
+
+    listeners.forEach(action = {
+      it.onValuesAvailable()
+    })
+  }
+
+  private fun listSensorsMeasurements() {
+    var url: String? = null
+    val iterator = sensorObject.sensors.entries.iterator()
+    while (iterator.hasNext()) {
+      val sensorEntry = iterator.next()
+      val sensor = sensorEntry.value
+      if (sensor.type == REQ_MAP_POINT) {
+        url = String.format(URL_REQ_MAP_POINT, sensor.gpsLatitude, sensor.gpsLongitude)
+      } else if (sensor.type == REQ_SENSOR) {
+        url = String.format(URL_REQ_SENSOR, sensor.id)
+      }
+
+      makeHttpRequest(url, sensor)
+    }
+  }
+}

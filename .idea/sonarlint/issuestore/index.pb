@@ -104,3 +104,7 @@ Papp/src/main/java/pl/tobzzo/miechowskiepowietrze/database/MpowDataBaseManager.k
 Lapp/src/main/java/pl/tobzzo/miechowskiepowietrze/di/module/SensorModule.java,f\4\f4c0dae9cf8452a8f839140098ecabcecee0faa8
 u
 Eapp/src/main/java/pl/tobzzo/miechowskiepowietrze/MpowApplication.java,c\0\c02a8536f32d7d14a50783bb2acbbe01de4bed90
+{
+Kapp/src/main/java/pl/tobzzo/miechowskiepowietrze/logging/TimberFormatter.kt,8\e\8ed7722109a0717946e586da5f82ff8f85a9bad8
+y
+Iapp/src/main/java/pl/tobzzo/miechowskiepowietrze/logging/MpowFormatter.kt,d\5\d5331b4c00fdf733e0f4c8b6fcd5cd237ae41a37

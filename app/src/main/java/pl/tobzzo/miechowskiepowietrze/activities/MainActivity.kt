@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -19,18 +18,15 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import com.google.android.gms.analytics.HitBuilders
-import com.google.android.gms.analytics.Tracker
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonObject
-import pl.tobzzo.miechowskiepowietrze.AnalyticsApplication
-import pl.tobzzo.miechowskiepowietrze.BuildConfig
 import pl.tobzzo.miechowskiepowietrze.MpowApplication
 import pl.tobzzo.miechowskiepowietrze.R.color
 import pl.tobzzo.miechowskiepowietrze.R.drawable
 import pl.tobzzo.miechowskiepowietrze.R.id
 import pl.tobzzo.miechowskiepowietrze.R.layout
-import pl.tobzzo.miechowskiepowietrze.connection.IonProvider
+import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
+import pl.tobzzo.miechowskiepowietrze.logging.LoggingManager
+import pl.tobzzo.miechowskiepowietrze.network.NetworkComponent
+import pl.tobzzo.miechowskiepowietrze.network.NetworkListener
 import pl.tobzzo.miechowskiepowietrze.rest.SensorMeasurementsResponse
 import pl.tobzzo.miechowskiepowietrze.sensor.Sensor
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject
@@ -43,8 +39,6 @@ import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SIKORSKIEGO
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SREDNIA
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SZPITALNA
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorType
-import pl.tobzzo.miechowskiepowietrze.sensor.SensorType.REQ_MAP_POINT
-import pl.tobzzo.miechowskiepowietrze.sensor.SensorType.REQ_SENSOR
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.bindView
 import timber.log.Timber
 import java.text.ParseException
@@ -52,14 +46,19 @@ import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Calendar
 import java.util.Date
-import java.util.HashMap
 import javax.inject.Inject
 
 
-class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
+private const val PM25_STANDARD = 25.0
+private const val PM10_STANDARD = 50.0
+private const val ANIMATION_TIME_IN_MS = 500
 
-  @Inject lateinit var ionProvider: IonProvider
+class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, NetworkListener {
+
   @Inject lateinit var sensorObject: SensorObject
+  @Inject lateinit var loggingManager: LoggingManager
+  @Inject lateinit var networkComponent: NetworkComponent
+  @Inject lateinit var analyticsComponent: AnalyticsComponent
 
   private val swipeLayout: SwipeRefreshLayout by bindView(id.swipe_container)
   private val sensorLoadingProgress: ProgressBar by bindView(id.sensorLoadingProgress)
@@ -118,36 +117,42 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
   private var httpHandler: Handler? = null
   private var fakeCAQI = -1
-  private var mTracker: Tracker? = null
-
-  private val apiKey: String
-    get() {
-      return (if (System.currentTimeMillis() % 2 == 0L)
-        BuildConfig.hiddenPassword1
-      else
-        BuildConfig.hiddenPassword2
-        ).also {
-        googleAnalyticsAction("getApiKey", it)
-        Timber.d("api key:$it")
-      }
-    }
-
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(layout.activity_main)
 
     (this.application as MpowApplication).appComponent.inject(this)
+    loggingManager.initialize()
+    networkComponent.initialize()
+    analyticsComponent.initialize()
+
+    networkComponent.attachNetworkListener(this)
   }
 
   override fun onPostCreate(savedInstanceState: Bundle?) {
     super.onPostCreate(savedInstanceState)
 
     initSensors()
-    setGoogleAnalytics()
-    googleAnalyticsAction("action", "onCreate")
+    analyticsComponent.logAction("logAction", "onCreate")
     setElements()
     setListeners()
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    networkComponent.detachNetworkListener(this)
+  }
+
+  override fun onValuesLoading() {
+    sensorLoadingProgress.visibility = View.VISIBLE
+    sensorResultTable.visibility = View.GONE
+  }
+
+  override fun onValuesAvailable() {
+    setGlobalChart()
+    sensorLoadingProgress.visibility = View.GONE
+    sensorResultTable.visibility = View.VISIBLE
   }
 
   private fun initSensors() {
@@ -180,45 +185,45 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
   private fun setListeners() {
     airQualityImageView.setOnClickListener {
-      googleAnalyticsAction("action", "airQualityImageView")
+      analyticsComponent.logAction("logAction", "airQualityImageView")
       fakeCAQI = (fakeCAQI + 25) % 168 - 1
       airQualityImageView.setImageResource(getLogoImage(fakeCAQI.toDouble()))
     }
 
     sensorSikorskiego.setOnClickListener {
-      googleAnalyticsAction("actionHistory", "sensorSikorskiegoHistory")
+      analyticsComponent.logAction("actionHistory", "sensorSikorskiegoHistory")
       changeViewVisibility(sensorSikorskiegoHistory)
-      sensorSikorskiegoHistoryChart.animateY(animationTimeInMs)
+      sensorSikorskiegoHistoryChart.animateY(ANIMATION_TIME_IN_MS)
     }
 
     sensorRynek.setOnClickListener {
-      googleAnalyticsAction("actionHistory", "sensorRynekHistory")
+      analyticsComponent.logAction("actionHistory", "sensorRynekHistory")
       changeViewVisibility(sensorRynekHistory)
-      sensorRynekHistoryChart.animateY(animationTimeInMs)
+      sensorRynekHistoryChart.animateY(ANIMATION_TIME_IN_MS)
     }
 
     sensorKopernika.setOnClickListener {
-      googleAnalyticsAction("actionHistory", "sensorKopernikaHistory")
+      analyticsComponent.logAction("actionHistory", "sensorKopernikaHistory")
       changeViewVisibility(sensorKopernikaHistory)
-      sensorKopernikaHistoryChart.animateY(animationTimeInMs)
+      sensorKopernikaHistoryChart.animateY(ANIMATION_TIME_IN_MS)
     }
 
     sensorParkowe.setOnClickListener {
-      googleAnalyticsAction("actionHistory", "sensorParkoweHistory")
+      analyticsComponent.logAction("actionHistory", "sensorParkoweHistory")
       changeViewVisibility(sensorParkoweHistory)
-      sensorParkoweHistoryChart.animateY(animationTimeInMs)
+      sensorParkoweHistoryChart.animateY(ANIMATION_TIME_IN_MS)
     }
 
     sensorSzpitalna.setOnClickListener {
-      googleAnalyticsAction("actionHistory", "sensorSzpitalnaHistory")
+      analyticsComponent.logAction("actionHistory", "sensorSzpitalnaHistory")
       changeViewVisibility(sensorSzpitalnaHistory)
-      sensorSzpitalnaHistoryChart.animateY(animationTimeInMs)
+      sensorSzpitalnaHistoryChart.animateY(ANIMATION_TIME_IN_MS)
     }
 
     sensorKrotka.setOnClickListener {
-      googleAnalyticsAction("actionHistory", "sensorKrotkaHistory")
+      analyticsComponent.logAction("actionHistory", "sensorKrotkaHistory")
       changeViewVisibility(sensorKrotkaHistory)
-      sensorKrotkaHistoryChart.animateY(animationTimeInMs)
+      sensorKrotkaHistoryChart.animateY(ANIMATION_TIME_IN_MS)
     }
   }
 
@@ -226,41 +231,8 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
     v.visibility = if (v.visibility == View.VISIBLE) View.GONE else View.VISIBLE
   }
 
-  private fun restartLoading(forceRefresh: Boolean) {
-    googleAnalyticsAction("action", "restartLoading")
-
-    if (forceRefresh)
-      lastLoading = 0
-
-    if (System.currentTimeMillis() - lastLoading < 30 * 60 * 1000) {
-      showResult()
-    } else {
-      lastLoading = System.currentTimeMillis()
-      responseMap = HashMap()
-      httpHandler!!.postDelayed({ listSensorsMeasurements() }, (2 * 1000).toLong())
-      sensorLoadingProgress.visibility = View.VISIBLE
-      sensorResultTable.visibility = View.GONE
-    }
-  }
-
-  private fun listSensorsMeasurements() {
-    var url: String? = null
-    val iterator = sensorObject.sensors.entries.iterator()
-    while (iterator.hasNext()) {
-      val sensorEntry = iterator.next()
-      val sensor = sensorEntry.value
-      if (sensor.type == REQ_MAP_POINT) {
-        url = String.format(URL_REQ_MAP_POINT, sensor.gpsLatitude, sensor.gpsLongitude)
-      } else if (sensor.type == REQ_SENSOR) {
-        url = String.format(URL_REQ_SENSOR, sensor.id)
-      }
-
-      makeHttpRequest(url, sensor)
-    }
-  }
-
   private fun setGlobalChart() {
-    var iterator: Iterator<*> = responseMap!!.entries.iterator()
+    var iterator: Iterator<*> = networkComponent.getResponseMap()!!.entries.iterator()
     var maxCAQI = 0.0
     var scaledMaxCAQI = 0
     var sumCAQI = 0.0
@@ -277,7 +249,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
     scaledMaxCAQI = (100 * maxCAQI / 50).toInt()
     avgCAQI = sumCAQI / countCAQI
 
-    iterator = responseMap!!.entries.iterator()
+    iterator = networkComponent.getResponseMap()!!.entries.iterator()
     while (iterator.hasNext()) {
       val entry = iterator.next() as Map.Entry<SensorPlace, SensorMeasurementsResponse>
       val sensorName = entry.key
@@ -332,11 +304,11 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
       val CAQI = sensorValues.currentMeasurements.airQualityIndex
       val scaledCAQI = (100 * CAQI / 50).toInt()
 
-      progressToUpdate!!.max = maxCAQI.toInt()
+      progressToUpdate.max = maxCAQI.toInt()
       progressToUpdate.progress = CAQI.toInt()
       progressToUpdate.reachedBarColor = getProgressColor(CAQI.toInt())
 
-      setDetailsInfo(entry, textViewToUpdatePm25!!, textViewToUpdatePm10!!, chartViewToUpdate)
+      setDetailsInfo(entry, textViewToUpdatePm25, textViewToUpdatePm10, chartViewToUpdate)
     }
 
     airQualityImageView.setImageResource(getLogoImage(avgCAQI))
@@ -442,108 +414,22 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
     }
   }
 
-  private fun makeHttpRequest(url: String?, sensor: Sensor) {
-    if (url == null)
-      return
-
-    responseMap!!.remove(sensor.name)
-    ionProvider.readSensorValues(url, apiKey) {exception:Exception?, result: JsonObject -> parseResult(exception, result, sensor)}
-  }
-
-  @Synchronized private fun parseResult(exception: Exception?, result: JsonObject, sensor: Sensor) {
-    try {
-      exception?.let {
-        Timber.e(exception,"parseResult ERROR original exception")
-      }
-
-      val gsonBuilder = GsonBuilder()
-      val gson = gsonBuilder.create()
-      val decoded = gson.fromJson(result, SensorMeasurementsResponse::class.java)
-      val isDecoded = SensorMeasurementsResponse::class.java.isInstance(decoded)
-      val sensorMeasurementsResponse = decoded as SensorMeasurementsResponse
-      responseMap!![sensor.name] = sensorMeasurementsResponse
-
-      tryToShowResult()
-    } catch (ex: Exception) {
-      Timber.e(ex, "parseResult ERROR")
-    }
-
-  }
-
-  private fun tryToShowResult() {
-    val calls = responseMap!!.size
-    var responses = 0
-
-    val iterator = responseMap!!.entries.iterator()
-    while (iterator.hasNext()) {
-      iterator.next()
-      responses++
-    }
-
-    if (responses < calls) {
-      Log.d("SRES", "only $responses available (calls=$calls)")
-    } else {
-      Log.d("SRES", "all $responses available (calls=$calls)")
-      showResult()
-    }
-  }
-
-  private fun showResult() {
-    googleAnalyticsAction("action", "showResult")
-
-    setGlobalChart()
-    sensorLoadingProgress.visibility = View.GONE
-    sensorResultTable.visibility = View.VISIBLE
-  }
-
-
   override fun onResume() {
     super.onResume()
 
-    googleAnalyticsAction("action", "onResume")
-    googleAnalyticsScreen("MainActivity")
+    analyticsComponent.logAction("logAction", "onResume")
+    analyticsComponent.logScreen("MainActivity")
 
-    restartLoading(false)
+    networkComponent.restartLoading(false)
   }
 
   override fun onRefresh() {
-    googleAnalyticsAction("action", "onRefresh")
+    analyticsComponent.logAction("logAction", "onRefresh")
 
     httpHandler!!.postDelayed({
-      restartLoading(true)
+      networkComponent.restartLoading(true)
       swipeLayout.isRefreshing = false
     }, 5000)
 
-  }
-
-  private fun setGoogleAnalytics() {
-    // Obtain the shared Tracker instance.
-    val application = application as AnalyticsApplication
-    mTracker = application.defaultTracker
-  }
-
-  private fun googleAnalyticsScreen(screenName: String) {
-
-    mTracker!!.setScreenName(screenName)
-    mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
-  }
-
-  private fun googleAnalyticsAction(category: String, action: String) {
-
-    mTracker!!.send(HitBuilders.EventBuilder()
-      .setCategory(category)
-      .setAction(action)
-      .build())
-
-  }
-
-  companion object {
-    private val URL_REQ_MAP_POINT = "https://airapi.airly.eu/v1/mapPoint/measurements?latitude=%1\$s&longitude=%2\$s"
-    private val URL_REQ_SENSOR = "https://airapi.airly.eu/v1/sensor/measurements?sensorId=%1\$s"
-    private val PM25_STANDARD = 25.0
-    private val PM10_STANDARD = 50.0
-    private val animationTimeInMs = 500
-    private var responseMap: MutableMap<SensorPlace, SensorMeasurementsResponse>? = null
-    private var lastLoading: Long = 0
   }
 }
