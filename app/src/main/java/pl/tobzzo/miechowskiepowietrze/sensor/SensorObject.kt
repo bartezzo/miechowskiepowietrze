@@ -1,7 +1,6 @@
 package pl.tobzzo.miechowskiepowietrze.sensor
 
 interface SensorObject{
-  fun addSensor(sensor: Sensor)
-
-  val sensors: HashMap<SensorPlace, Sensor>
+  var activeSensors: MutableList<SensorPlace>
+  fun getSensor(sensorPlace: SensorPlace): Sensor?
 }

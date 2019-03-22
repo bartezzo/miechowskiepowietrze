@@ -1,27 +1,21 @@
 package pl.tobzzo.miechowskiepowietrze.network
 
 import android.content.Context
-import android.view.View
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import pl.tobzzo.miechowskiepowietrze.BuildConfig
 import pl.tobzzo.miechowskiepowietrze.MpowApplication
-import pl.tobzzo.miechowskiepowietrze.activities.MainActivity.Companion
 import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
 import pl.tobzzo.miechowskiepowietrze.connection.IonProvider
 import pl.tobzzo.miechowskiepowietrze.rest.SensorMeasurementsResponse
 import pl.tobzzo.miechowskiepowietrze.sensor.Sensor
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace
-import pl.tobzzo.miechowskiepowietrze.sensor.SensorType.REQ_MAP_POINT
-import pl.tobzzo.miechowskiepowietrze.sensor.SensorType.REQ_SENSOR
+import pl.tobzzo.miechowskiepowietrze.utils.extensions.mapToUrl
 import timber.log.Timber
 import java.util.HashMap
 import javax.inject.Inject
 
-
-private const val URL_REQ_MAP_POINT = "https://airapi.airly.eu/v1/mapPoint/measurements?latitude=%1\$s&longitude=%2\$s"
-private const val URL_REQ_SENSOR = "https://airapi.airly.eu/v1/sensor/measurements?sensorId=%1\$s"
 
 class MpowNetworkComponent(private val context: Context) : NetworkComponent{
   @Inject lateinit var ionProvider: IonProvider
@@ -51,7 +45,7 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent{
     if (url == null)
       return
 
-    responseMap!!.remove(sensor.name)
+    responseMap!!.remove(sensor.place)
     ionProvider.readSensorValues(url, apiKey) {exception:Exception?, result: JsonObject -> parseResult(exception, result, sensor)}
   }
 
@@ -97,7 +91,7 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent{
       val decoded = gson.fromJson(result, SensorMeasurementsResponse::class.java)
       val isDecoded = SensorMeasurementsResponse::class.java.isInstance(decoded)
       val sensorMeasurementsResponse = decoded as SensorMeasurementsResponse
-      responseMap!![sensor.name] = sensorMeasurementsResponse
+      responseMap!![sensor.place] = sensorMeasurementsResponse
 
       tryToShowResult()
     } catch (ex: Exception) {
@@ -132,18 +126,13 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent{
   }
 
   private fun listSensorsMeasurements() {
-    var url: String? = null
-    val iterator = sensorObject.sensors.entries.iterator()
+    val iterator = sensorObject.activeSensors.iterator()
     while (iterator.hasNext()) {
-      val sensorEntry = iterator.next()
-      val sensor = sensorEntry.value
-      if (sensor.type == REQ_MAP_POINT) {
-        url = String.format(URL_REQ_MAP_POINT, sensor.gpsLatitude, sensor.gpsLongitude)
-      } else if (sensor.type == REQ_SENSOR) {
-        url = String.format(URL_REQ_SENSOR, sensor.id)
+      val sensorPlace = iterator.next()
+      val sensor = sensorObject.getSensor(sensorPlace)
+      sensor?.let {
+        makeHttpRequest(sensor.mapToUrl(), sensor)
       }
-
-      makeHttpRequest(url, sensor)
     }
   }
 }
