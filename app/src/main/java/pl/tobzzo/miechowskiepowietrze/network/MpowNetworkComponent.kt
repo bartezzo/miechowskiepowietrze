@@ -7,7 +7,7 @@ import pl.tobzzo.miechowskiepowietrze.BuildConfig
 import pl.tobzzo.miechowskiepowietrze.MpowApplication
 import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
 import pl.tobzzo.miechowskiepowietrze.connection.IonProvider
-import pl.tobzzo.miechowskiepowietrze.rest.SensorMeasurementsResponse
+import pl.tobzzo.miechowskiepowietrze.rest.v1.SensorMeasurementsResponseV1
 import pl.tobzzo.miechowskiepowietrze.sensor.Sensor
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace
@@ -22,7 +22,7 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent{
   @Inject lateinit var analyticsComponent: AnalyticsComponent
   @Inject lateinit var sensorObject: SensorObject
 
-  private var responseMap: MutableMap<SensorPlace, SensorMeasurementsResponse>? = null
+  private var responseMap: MutableMap<SensorPlace, SensorMeasurementsResponseV1>? = null
   private val listeners = mutableListOf<NetworkListener>()
   private var lastLoading: Long = 0
   private val apiKey: String
@@ -68,7 +68,7 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent{
       }
   }
 
-  override fun getResponseMap(): MutableMap<SensorPlace, SensorMeasurementsResponse>? {
+  override fun getResponseMap(): MutableMap<SensorPlace, SensorMeasurementsResponseV1>? {
     return responseMap
   }
 
@@ -88,9 +88,9 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent{
 
       val gsonBuilder = GsonBuilder()
       val gson = gsonBuilder.create()
-      val decoded = gson.fromJson(result, SensorMeasurementsResponse::class.java)
-      val isDecoded = SensorMeasurementsResponse::class.java.isInstance(decoded)
-      val sensorMeasurementsResponse = decoded as SensorMeasurementsResponse
+      val decoded = gson.fromJson(result, SensorMeasurementsResponseV1::class.java)
+      val isDecoded = SensorMeasurementsResponseV1::class.java.isInstance(decoded)
+      val sensorMeasurementsResponse = decoded as SensorMeasurementsResponseV1
       responseMap!![sensor.place] = sensorMeasurementsResponse
 
       tryToShowResult()

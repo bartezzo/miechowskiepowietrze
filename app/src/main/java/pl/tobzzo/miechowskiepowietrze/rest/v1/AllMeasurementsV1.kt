@@ -1,7 +1,7 @@
-package pl.tobzzo.miechowskiepowietrze.rest
+package pl.tobzzo.miechowskiepowietrze.rest.v1
 
 
-data class AllMeasurements(
+data class AllMeasurementsV1(
   var airQualityIndex: Double = 0.toDouble(), //Common Air Quality Index (CAQI). http://www.airqualitynow.eu/about_indices_definition.php
   var humidity: Double = 0.toDouble(),
   var pm1: Double = 0.toDouble(),
@@ -16,7 +16,7 @@ data class AllMeasurements(
 
   override fun toString(): String {
     val stringBuilder = StringBuilder()
-    stringBuilder.append("[AllMeasurements]\n")
+    stringBuilder.append("[AllMeasurementsV1]\n")
       .append("<airQualityIndex>\n").append(airQualityIndex).append("\n")
       .append("<humidity>\n").append(humidity).append("\n")
       .append("<pm1>\n").append(pm1).append("\n")

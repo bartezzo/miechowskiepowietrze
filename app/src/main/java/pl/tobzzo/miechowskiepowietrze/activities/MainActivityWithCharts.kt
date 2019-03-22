@@ -24,7 +24,7 @@ import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
 import pl.tobzzo.miechowskiepowietrze.logging.LoggingManager
 import pl.tobzzo.miechowskiepowietrze.network.NetworkComponent
 import pl.tobzzo.miechowskiepowietrze.network.NetworkListener
-import pl.tobzzo.miechowskiepowietrze.rest.SensorMeasurementsResponse
+import pl.tobzzo.miechowskiepowietrze.rest.v1.SensorMeasurementsResponseV1
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_KOPERNIKA
@@ -216,8 +216,8 @@ class MainActivityWithCharts : AppCompatActivity(), SwipeRefreshLayout.OnRefresh
     var countCAQI = 0
 
     while (iterator.hasNext()) {
-      val entry = iterator.next() as Map.Entry<SensorPlace, SensorMeasurementsResponse>
-      val CAQI = entry.value.currentMeasurements.airQualityIndex
+      val entry = iterator.next() as Map.Entry<SensorPlace, SensorMeasurementsResponseV1>
+      val CAQI = entry.value.currentMeasurementsV1.airQualityIndex
       maxCAQI = Math.max(maxCAQI, CAQI)
       sumCAQI += CAQI
       countCAQI += 1
@@ -227,7 +227,7 @@ class MainActivityWithCharts : AppCompatActivity(), SwipeRefreshLayout.OnRefresh
 
     iterator = networkComponent.getResponseMap()!!.entries.iterator()
     while (iterator.hasNext()) {
-      val entry = iterator.next() as Map.Entry<SensorPlace, SensorMeasurementsResponse>
+      val entry = iterator.next() as Map.Entry<SensorPlace, SensorMeasurementsResponseV1>
       val sensorName = entry.key
       val sensorValues = entry.value
       var progressToUpdate: NumberProgressBar?
@@ -277,7 +277,7 @@ class MainActivityWithCharts : AppCompatActivity(), SwipeRefreshLayout.OnRefresh
         }
       }
 
-      val CAQI = sensorValues.currentMeasurements.airQualityIndex
+      val CAQI = sensorValues.currentMeasurementsV1.airQualityIndex
       val scaledCAQI = (100 * CAQI / 50).toInt()
 
       progressToUpdate.max = maxCAQI.toInt()
@@ -290,12 +290,12 @@ class MainActivityWithCharts : AppCompatActivity(), SwipeRefreshLayout.OnRefresh
     airQualityImageView.setImageResource(avgCAQI.mapToBarColor(resources))
   }
 
-  private fun setDetailsInfo(entry: Map.Entry<SensorPlace, SensorMeasurementsResponse>, textViewToUpdatePm25: TextView,
+  private fun setDetailsInfo(entry: Map.Entry<SensorPlace, SensorMeasurementsResponseV1>, textViewToUpdatePm25: TextView,
     textViewToUpdatePm10: TextView, chartViewToUpdate: BarChart?) {
     val patternPm25 = "%1\$s%% (pm 2.5)"
     val patternPm10 = "%1\$s%% (pm  10)"
-    val pm25 = 100 * entry.value.currentMeasurements.pm25 / PM25_STANDARD
-    val pm10 = 100 * entry.value.currentMeasurements.pm10 / PM10_STANDARD
+    val pm25 = 100 * entry.value.currentMeasurementsV1.pm25 / PM25_STANDARD
+    val pm10 = 100 * entry.value.currentMeasurementsV1.pm10 / PM10_STANDARD
     val infoPm25 = String.format(patternPm25, pm25.toInt())
     val infoPm10 = String.format(patternPm10, pm10.toInt())
     textViewToUpdatePm25.text = infoPm25
@@ -304,7 +304,7 @@ class MainActivityWithCharts : AppCompatActivity(), SwipeRefreshLayout.OnRefresh
     showHistoryChart(chartViewToUpdate, entry)
   }
 
-  private fun showHistoryChart(chartViewToUpdate: BarChart?, entry: Map.Entry<SensorPlace, SensorMeasurementsResponse>) {
+  private fun showHistoryChart(chartViewToUpdate: BarChart?, entry: Map.Entry<SensorPlace, SensorMeasurementsResponseV1>) {
     val entries = ArrayList<BarEntry>()
     val entriesColor = ArrayList<Int>()
 
@@ -318,7 +318,7 @@ class MainActivityWithCharts : AppCompatActivity(), SwipeRefreshLayout.OnRefresh
       val measurementsTimeFramed = history.get(i)
       val fromDate = measurementsTimeFramed.fromDateTime
       val tillDate = measurementsTimeFramed.tillDateTime
-      val measurements = measurementsTimeFramed.measurements
+      val measurements = measurementsTimeFramed.measurementsV1
       val pm25 = measurements.pm25
       val pm10 = measurements.pm10
       val caqi = measurements.airQualityIndex
