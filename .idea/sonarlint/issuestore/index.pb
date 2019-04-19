@@ -1,14 +1,8 @@
 
-ƒ
-Sapp/src/main/java/pl/tobzzo/miechowskiepowietrze/rest/SensorMeasurementsResponse.kt,1\d\1df822ebace5bfd1356e3ad8ccdbb4e4a0999ff5
-x
-Happ/src/main/java/pl/tobzzo/miechowskiepowietrze/rest/AllMeasurements.kt,a\0\a0073970cd9b926919bd8092ca04b94e2e0afce8
 <
 build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
 @
 app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
-
-Oapp/src/main/java/pl/tobzzo/miechowskiepowietrze/rest/MeasurementsTimeFramed.kt,6\4\6404d7e886ec2be9621706ded744afe15b4dc3e3
 €
 Papp/src/main/java/pl/tobzzo/miechowskiepowietrze/utils/extensions/KotterKnife.kt,6\3\63d641ee40951a51105a83882708af4675804660
 „
@@ -108,3 +102,17 @@ Eapp/src/main/java/pl/tobzzo/miechowskiepowietrze/MpowApplication.java,c\0\c02a
 Kapp/src/main/java/pl/tobzzo/miechowskiepowietrze/logging/TimberFormatter.kt,8\e\8ed7722109a0717946e586da5f82ff8f85a9bad8
 y
 Iapp/src/main/java/pl/tobzzo/miechowskiepowietrze/logging/MpowFormatter.kt,d\5\d5331b4c00fdf733e0f4c8b6fcd5cd237ae41a37
+}
+Mapp/src/main/java/pl/tobzzo/miechowskiepowietrze/rest/v1/AllMeasurementsV1.kt,3\e\3ed7449dc960805d2e1db2c0218545341741028a
+…
+Uapp/src/main/java/pl/tobzzo/miechowskiepowietrze/activities/MainActivityWithCharts.kt,9\3\939c5312909725250fceb63cb5992040b26adf42
+„
+Tapp/src/main/java/pl/tobzzo/miechowskiepowietrze/utils/extensions/SensorExtension.kt,c\5\c5f9b499f9032969aab9ecc4f37ed2fcfde32437
+|
+Lapp/src/main/java/pl/tobzzo/miechowskiepowietrze/network/NetworkComponent.kt,c\5\c5b9e60ff46ec29b5619c909271a3e483137525c
+€
+Papp/src/main/java/pl/tobzzo/miechowskiepowietrze/network/MpowNetworkComponent.kt,a\0\a0d741b6ddece9e5324bfbeae27342a3810e054f
+ƒ
+Sapp/src/main/java/pl/tobzzo/miechowskiepowietrze/utils/extensions/ResourcesUtils.kt,e\e\ee9435a8a1c9f6b3f86d51dcf3646c00517ca24c
+„
+Tapp/src/main/java/pl/tobzzo/miechowskiepowietrze/rest/v1/MeasurementsTimeFramedV1.kt,3\2\3258a4c2ef0c0aacd3047feb242a93b149f43a27
