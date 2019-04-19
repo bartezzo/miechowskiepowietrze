@@ -8,6 +8,7 @@ import pl.tobzzo.miechowskiepowietrze.MpowApplication
 import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
 import pl.tobzzo.miechowskiepowietrze.connection.IonProvider
 import pl.tobzzo.miechowskiepowietrze.rest.v1.SensorMeasurementsResponseV1
+import pl.tobzzo.miechowskiepowietrze.rest.v2.SensorMeasurementsResponseV2
 import pl.tobzzo.miechowskiepowietrze.sensor.Sensor
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace
@@ -88,7 +89,7 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent{
 
       val gsonBuilder = GsonBuilder()
       val gson = gsonBuilder.create()
-      val decoded = gson.fromJson(result, SensorMeasurementsResponseV1::class.java)
+      val decoded = gson.fromJson(result, SensorMeasurementsResponseV2::class.java)
       val isDecoded = SensorMeasurementsResponseV1::class.java.isInstance(decoded)
       val sensorMeasurementsResponse = decoded as SensorMeasurementsResponseV1
       responseMap!![sensor.place] = sensorMeasurementsResponse
