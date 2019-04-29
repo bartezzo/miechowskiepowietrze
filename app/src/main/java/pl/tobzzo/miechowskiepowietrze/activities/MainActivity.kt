@@ -4,12 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.ScrollView
-import android.widget.TableLayout
-import android.widget.TableRow
-import android.widget.TextView
+import android.widget.*
 import com.daimajia.numberprogressbar.NumberProgressBar
 import pl.tobzzo.miechowskiepowietrze.MpowApplication
 import pl.tobzzo.miechowskiepowietrze.R.id
@@ -18,15 +13,10 @@ import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
 import pl.tobzzo.miechowskiepowietrze.logging.LoggingManager
 import pl.tobzzo.miechowskiepowietrze.network.NetworkComponent
 import pl.tobzzo.miechowskiepowietrze.network.NetworkListener
-import pl.tobzzo.miechowskiepowietrze.rest.v1.SensorMeasurementsResponseV1
+import pl.tobzzo.miechowskiepowietrze.rest.v2.Measurements
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace
-import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_KOPERNIKA
-import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_KROTKA
-import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_PARKOWE
-import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_RYNEK
-import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SIKORSKIEGO
-import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SZPITALNA
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.*
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.bindView
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.isVisible
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.mapToBarColor
@@ -148,8 +138,8 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
     var countCAQI = 0
 
     while (iterator.hasNext()) {
-      val entry = iterator.next() as Map.Entry<SensorPlace, SensorMeasurementsResponseV1>
-      val CAQI = entry.value.currentMeasurementsV1.airQualityIndex
+      val entry = iterator.next() as Map.Entry<SensorPlace, Measurements>
+      val CAQI = entry.value.current.values[0] as Double
       maxCAQI = Math.max(maxCAQI, CAQI)
       sumCAQI += CAQI
       countCAQI += 1
@@ -159,7 +149,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
 
     iterator = networkComponent.getResponseMap()!!.entries.iterator()
     while (iterator.hasNext()) {
-      val entry = iterator.next() as Map.Entry<SensorPlace, SensorMeasurementsResponseV1>
+      val entry = iterator.next() as Map.Entry<SensorPlace, Measurements>
       val sensorName = entry.key
       val sensorValues = entry.value
       var progressToUpdate: NumberProgressBar?
@@ -202,7 +192,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
         }
       }
 
-      val CAQI = sensorValues.currentMeasurementsV1.airQualityIndex
+      val CAQI = sensorValues.current.values[0] as Double
       val scaledCAQI = (100 * CAQI / 50).toInt()
 
       progressToUpdate.max = maxCAQI.toInt()
@@ -215,12 +205,12 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
     airQualityImageView.setImageResource(avgCAQI.mapToLogoImage())
   }
 
-  private fun setDetailsInfo(entry: Map.Entry<SensorPlace, SensorMeasurementsResponseV1>, textViewToUpdatePm25: TextView,
-    textViewToUpdatePm10: TextView) {
+  private fun setDetailsInfo(entry: Map.Entry<SensorPlace, Measurements>, textViewToUpdatePm25: TextView,
+                             textViewToUpdatePm10: TextView) {
     val patternPm25 = "%1\$s%% (pm 2.5)"
     val patternPm10 = "%1\$s%% (pm  10)"
-    val pm25 = 100 * entry.value.currentMeasurementsV1.pm25 / PM25_STANDARD
-    val pm10 = 100 * entry.value.currentMeasurementsV1.pm10 / PM10_STANDARD
+    val pm25 = 100 * entry.value.current.values[0] as Double / PM25_STANDARD
+    val pm10 = 100 * entry.value.current.values[0] as Double / PM10_STANDARD
     val infoPm25 = String.format(patternPm25, pm25.toInt())
     val infoPm10 = String.format(patternPm10, pm10.toInt())
     textViewToUpdatePm25.text = infoPm25

@@ -8,7 +8,7 @@ import pl.tobzzo.miechowskiepowietrze.MpowApplication
 import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
 import pl.tobzzo.miechowskiepowietrze.connection.IonProvider
 import pl.tobzzo.miechowskiepowietrze.rest.v1.SensorMeasurementsResponseV1
-import pl.tobzzo.miechowskiepowietrze.rest.v2.SensorMeasurementsResponseV2
+import pl.tobzzo.miechowskiepowietrze.rest.v2.Measurements
 import pl.tobzzo.miechowskiepowietrze.sensor.Sensor
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace
@@ -23,7 +23,7 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent{
   @Inject lateinit var analyticsComponent: AnalyticsComponent
   @Inject lateinit var sensorObject: SensorObject
 
-  private var responseMap: MutableMap<SensorPlace, SensorMeasurementsResponseV1>? = null
+  private var responseMap: MutableMap<SensorPlace, Measurements>? = null
   private val listeners = mutableListOf<NetworkListener>()
   private var lastLoading: Long = 0
   private val apiKey: String
@@ -69,7 +69,7 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent{
       }
   }
 
-  override fun getResponseMap(): MutableMap<SensorPlace, SensorMeasurementsResponseV1>? {
+  override fun getResponseMap(): MutableMap<SensorPlace, Measurements>? {
     return responseMap
   }
 
@@ -89,9 +89,9 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent{
 
       val gsonBuilder = GsonBuilder()
       val gson = gsonBuilder.create()
-      val decoded = gson.fromJson(result, SensorMeasurementsResponseV2::class.java)
-      val isDecoded = SensorMeasurementsResponseV1::class.java.isInstance(decoded)
-      val sensorMeasurementsResponse = decoded as SensorMeasurementsResponseV1
+      val decoded = gson.fromJson(result, Measurements::class.java)
+      val isDecoded = Measurements::class.java.isInstance(decoded)
+      val sensorMeasurementsResponse = decoded as Measurements
       responseMap!![sensor.place] = sensorMeasurementsResponse
 
       tryToShowResult()
