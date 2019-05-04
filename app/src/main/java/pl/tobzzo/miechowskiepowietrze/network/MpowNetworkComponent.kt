@@ -12,13 +12,13 @@ import pl.tobzzo.miechowskiepowietrze.rest.v2.Measurements
 import pl.tobzzo.miechowskiepowietrze.sensor.Sensor
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace
+import pl.tobzzo.miechowskiepowietrze.utils.TimeUtils
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.mapToUrl
 import timber.log.Timber
 import java.util.HashMap
 import javax.inject.Inject
 
-
-class MpowNetworkComponent(private val context: Context) : NetworkComponent{
+class MpowNetworkComponent(private val context: Context) : NetworkComponent {
   @Inject lateinit var ionProvider: IonProvider
   @Inject lateinit var analyticsComponent: AnalyticsComponent
   @Inject lateinit var sensorObject: SensorObject
@@ -42,31 +42,35 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent{
     (context as MpowApplication).appComponent.inject(this)
   }
 
-  override fun makeHttpRequest(url: String?, sensor: Sensor) {
+  override fun makeHttpRequest(
+    url: String?,
+    sensor: Sensor
+  ) {
     if (url == null)
       return
 
     responseMap!!.remove(sensor.place)
-    ionProvider.readSensorValues(url, apiKey) {exception:Exception?, result: JsonObject -> parseResult(exception, result, sensor)}
+    ionProvider.readSensorValues(
+      url, apiKey
+    ) { exception: Exception?, result: JsonObject -> parseResult(exception, result, sensor) }
   }
 
   override fun restartLoading(forceRefresh: Boolean) {
     analyticsComponent.logAction("logAction", "restartLoading")
 
-      if (forceRefresh)
-        lastLoading = 0
+    if (forceRefresh)
+      lastLoading = 0
 
-      if (System.currentTimeMillis() - lastLoading < 30 * 60 * 1000) {
-        showResult()
-      } else {
-        lastLoading = System.currentTimeMillis()
-        responseMap = HashMap()
-//        httpHandler!!.postDelayed({ listSensorsMeasurements() }, (2 * 1000).toLong())
-        listSensorsMeasurements()
-       listeners.forEach {
-         it.onValuesLoading()
-       }
+    if (System.currentTimeMillis() - lastLoading < 30 * TimeUtils.ONE_SECOND) {
+      showResult()
+    } else {
+      lastLoading = System.currentTimeMillis()
+      responseMap = HashMap()
+      listSensorsMeasurements()
+      listeners.forEach {
+        it.onValuesLoading()
       }
+    }
   }
 
   override fun getResponseMap(): MutableMap<SensorPlace, Measurements>? {
@@ -81,10 +85,14 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent{
     listeners.remove(listener)
   }
 
-  @Synchronized private fun parseResult(exception: Exception?, result: JsonObject, sensor: Sensor) {
+  @Synchronized private fun parseResult(
+    exception: Exception?,
+    result: JsonObject,
+    sensor: Sensor
+  ) {
     try {
       exception?.let {
-        Timber.e(exception,"parseResult ERROR original exception")
+        Timber.e(exception, "parseResult ERROR original exception")
       }
 
       val gsonBuilder = GsonBuilder()
