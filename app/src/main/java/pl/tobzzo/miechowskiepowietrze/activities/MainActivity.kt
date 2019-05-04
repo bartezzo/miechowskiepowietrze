@@ -13,7 +13,10 @@ import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
 import pl.tobzzo.miechowskiepowietrze.logging.LoggingManager
 import pl.tobzzo.miechowskiepowietrze.network.NetworkComponent
 import pl.tobzzo.miechowskiepowietrze.network.NetworkListener
+import pl.tobzzo.miechowskiepowietrze.rest.v2.Index
 import pl.tobzzo.miechowskiepowietrze.rest.v2.Measurements
+import pl.tobzzo.miechowskiepowietrze.rest.v2.Standard
+import pl.tobzzo.miechowskiepowietrze.rest.v2.Value
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.*
@@ -139,7 +142,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
 
     while (iterator.hasNext()) {
       val entry = iterator.next() as Map.Entry<SensorPlace, Measurements>
-      val CAQI = entry.value.current.values[0] as Double
+      val CAQI = entry.value.current.indexes[0].value.toDouble()
       maxCAQI = Math.max(maxCAQI, CAQI)
       sumCAQI += CAQI
       countCAQI += 1
@@ -192,7 +195,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
         }
       }
 
-      val CAQI = sensorValues.current.values[0] as Double
+      val CAQI = sensorValues.current.values[0].value.toDouble()
       val scaledCAQI = (100 * CAQI / 50).toInt()
 
       progressToUpdate.max = maxCAQI.toInt()
@@ -209,8 +212,8 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
                              textViewToUpdatePm10: TextView) {
     val patternPm25 = "%1\$s%% (pm 2.5)"
     val patternPm10 = "%1\$s%% (pm  10)"
-    val pm25 = 100 * entry.value.current.values[0] as Double / PM25_STANDARD
-    val pm10 = 100 * entry.value.current.values[0] as Double / PM10_STANDARD
+    val pm25 = entry.value.current.standards[0].percent
+    val pm10 = entry.value.current.standards[1].percent
     val infoPm25 = String.format(patternPm25, pm25.toInt())
     val infoPm10 = String.format(patternPm10, pm10.toInt())
     textViewToUpdatePm25.text = infoPm25
