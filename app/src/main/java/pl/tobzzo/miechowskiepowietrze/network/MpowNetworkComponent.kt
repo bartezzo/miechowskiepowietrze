@@ -3,6 +3,10 @@ package pl.tobzzo.miechowskiepowietrze.network
 import android.content.Context
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import pl.tobzzo.miechowskiepowietrze.BuildConfig
 import pl.tobzzo.miechowskiepowietrze.MpowApplication
 import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
@@ -42,17 +46,32 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent {
     (context as MpowApplication).appComponent.inject(this)
   }
 
-  override fun makeHttpRequest(
-    url: String?,
+  private fun makeHttpRequest(
+    url: String,
     sensor: Sensor
-  ) {
-    if (url == null)
-      return
+  ): Single<Measurements> {
 
+    Timber.d("Response map remove:${sensor.place}")
     responseMap!!.remove(sensor.place)
+
     ionProvider.readSensorValues(
-      url, apiKey
-    ) { exception: Exception?, result: JsonObject -> parseResult(exception, result, sensor) }
+      url, apiKey)
+
+//    var httpexc: Throwable? = null
+//    var httpres: JsonObject? = null
+//
+//    ionProvider.readSensorValues(
+//      url, apiKey
+//    ) { exception: Exception?, result: JsonObject ->
+//      httpexc = exception
+//      httpres = result
+//    }
+//
+//    return if (httpexc != null) {
+//      Single.error(httpexc)
+//    } else {
+//      parseResult(httpres, sensor)
+//    }
   }
 
   override fun restartLoading(forceRefresh: Boolean) {
@@ -61,7 +80,7 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent {
     if (forceRefresh)
       lastLoading = 0
 
-    if (System.currentTimeMillis() - lastLoading < 30 * TimeUtils.ONE_SECOND) {
+    if (!needToRefresh()) {
       showResult()
     } else {
       lastLoading = System.currentTimeMillis()
@@ -73,9 +92,7 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent {
     }
   }
 
-  override fun getResponseMap(): MutableMap<SensorPlace, Measurements>? {
-    return responseMap
-  }
+  override fun getResponseMap(): MutableMap<SensorPlace, Measurements>? = responseMap
 
   override fun attachNetworkListener(listener: NetworkListener) {
     listeners.add(listener)
@@ -86,29 +103,31 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent {
   }
 
   @Synchronized private fun parseResult(
-    exception: Exception?,
-    result: JsonObject,
+    result: JsonObject?,
     sensor: Sensor
-  ) {
+  ): Single<Measurements> {
     try {
-      exception?.let {
-        Timber.e(exception, "parseResult ERROR original exception")
-      }
 
       val gsonBuilder = GsonBuilder()
       val gson = gsonBuilder.create()
       val decoded = gson.fromJson(result, Measurements::class.java)
       val isDecoded = Measurements::class.java.isInstance(decoded)
       val sensorMeasurementsResponse = decoded as Measurements
-      responseMap!![sensor.place] = sensorMeasurementsResponse
+      Timber.d("Response map add:${sensor.place}")
+//      responseMap!![sensor.place] = sensorMeasurementsResponse
 
-      tryToShowResult()
+//      tryToShowResult()
+      return Single.just(sensorMeasurementsResponse)
     } catch (ex: Exception) {
       Timber.e(ex, "parseResult ERROR")
+      return Single.error(ex)
     }
   }
 
+  private fun needToRefresh() = System.currentTimeMillis() - lastLoading > 30 * TimeUtils.ONE_SECOND
+
   private fun tryToShowResult() {
+    Timber.d("Response map tryToShowResult size:${responseMap!!.size}")
     val calls = responseMap!!.size
     var responses = 0
 
@@ -140,7 +159,19 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent {
       val sensorPlace = iterator.next()
       val sensor = sensorObject.getSensor(sensorPlace)
       sensor?.let {
-        makeHttpRequest(sensor.mapToUrl(), sensor)
+        val url = sensor.mapToUrl()
+        url?.let {
+          //        makeHttpRequest(sensor.mapToUrl(), sensor)
+          val httpRequestObservable: Single<Measurements> =
+            makeHttpRequest(url, sensor)
+
+          httpRequestObservable.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy(
+              onSuccess = { print("listSensorsMeasurements SUCCESS" + it) },
+              onError = { print("listSensorsMeasurements ERROR" + it) }
+            )
+        }
       }
     }
   }

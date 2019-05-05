@@ -4,8 +4,16 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
-import android.widget.*
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.ScrollView
+import android.widget.TableLayout
+import android.widget.TableRow
+import android.widget.TextView
+import android.widget.Toast
 import com.daimajia.numberprogressbar.NumberProgressBar
+import io.reactivex.Completable
+import io.reactivex.rxkotlin.subscribeBy
 import pl.tobzzo.miechowskiepowietrze.MpowApplication
 import pl.tobzzo.miechowskiepowietrze.R.id
 import pl.tobzzo.miechowskiepowietrze.R.layout
@@ -13,19 +21,21 @@ import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
 import pl.tobzzo.miechowskiepowietrze.logging.LoggingManager
 import pl.tobzzo.miechowskiepowietrze.network.NetworkComponent
 import pl.tobzzo.miechowskiepowietrze.network.NetworkListener
-import pl.tobzzo.miechowskiepowietrze.rest.v2.Index
 import pl.tobzzo.miechowskiepowietrze.rest.v2.Measurements
-import pl.tobzzo.miechowskiepowietrze.rest.v2.Standard
-import pl.tobzzo.miechowskiepowietrze.rest.v2.Value
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace
-import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.*
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_KOPERNIKA
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_KROTKA
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_PARKOWE
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_RYNEK
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SIKORSKIEGO
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SZPITALNA
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.bindView
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.isVisible
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.mapToBarColor
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.mapToLogoImage
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-
 
 private const val PM25_STANDARD = 25.0
 private const val PM10_STANDARD = 50.0
@@ -226,7 +236,10 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
     analyticsComponent.logAction("logAction", "onResume")
     analyticsComponent.logScreen("MainActivity")
     networkComponent.restartLoading(false)
+
+
   }
+
 
   override fun onRefresh() {
     analyticsComponent.logAction("logAction", "onRefresh")
