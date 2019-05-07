@@ -1,7 +1,9 @@
 package pl.tobzzo.miechowskiepowietrze.rest.v2
 
-data class Measurements(
-        val current: AveragedValues,
-        val history: Array<AveragedValues>,
-        val forecast: Array<AveragedValues>
+import com.google.gson.annotations.SerializedName
+
+class Measurements(
+  @SerializedName("current") val current: AveragedValues,
+  @SerializedName("history") val history: Array<AveragedValues>,
+  @SerializedName("forecast") val forecast: Array<AveragedValues>
 )

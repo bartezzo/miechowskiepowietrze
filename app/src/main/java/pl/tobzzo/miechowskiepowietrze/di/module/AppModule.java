@@ -8,6 +8,8 @@ import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent;
 import pl.tobzzo.miechowskiepowietrze.analytics.MpowAnalyticsComponent;
 import pl.tobzzo.miechowskiepowietrze.connection.IonProvider;
 import pl.tobzzo.miechowskiepowietrze.connection.MpowIonProvider;
+import pl.tobzzo.miechowskiepowietrze.connection.MpowRetrofitProvider;
+import pl.tobzzo.miechowskiepowietrze.connection.RetrofitProvider;
 import pl.tobzzo.miechowskiepowietrze.logging.LoggingManager;
 import pl.tobzzo.miechowskiepowietrze.logging.MpowLoggingManager;
 import pl.tobzzo.miechowskiepowietrze.network.MpowNetworkComponent;
@@ -29,10 +31,16 @@ public class AppModule {
     return context;
   }
 
+  //@Provides
+  //@Singleton
+  //public IonProvider provideIonProvider(Context context) {
+  //  return new MpowIonProvider(context);
+  //}
+
   @Provides
   @Singleton
-  public IonProvider provideIonProvider(Context context) {
-    return new MpowIonProvider(context);
+  public RetrofitProvider provideRetrofitProvider() {
+    return new MpowRetrofitProvider();
   }
 
   @Provides

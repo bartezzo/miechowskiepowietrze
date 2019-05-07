@@ -4,26 +4,29 @@ import android.content.Context
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
 import pl.tobzzo.miechowskiepowietrze.BuildConfig
 import pl.tobzzo.miechowskiepowietrze.MpowApplication
 import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
-import pl.tobzzo.miechowskiepowietrze.connection.IonProvider
-import pl.tobzzo.miechowskiepowietrze.rest.v1.SensorMeasurementsResponseV1
+import pl.tobzzo.miechowskiepowietrze.connection.RetrofitProvider
+import pl.tobzzo.miechowskiepowietrze.rest.retrofit.GetMeasurementsService
+import pl.tobzzo.miechowskiepowietrze.rest.retrofit.RetrofitClientInstance
 import pl.tobzzo.miechowskiepowietrze.rest.v2.Measurements
 import pl.tobzzo.miechowskiepowietrze.sensor.Sensor
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace
 import pl.tobzzo.miechowskiepowietrze.utils.TimeUtils
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.mapToUrl
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import timber.log.Timber
 import java.util.HashMap
 import javax.inject.Inject
 
+
 class MpowNetworkComponent(private val context: Context) : NetworkComponent {
-  @Inject lateinit var ionProvider: IonProvider
+  //  @Inject lateinit var ionProvider: IonProvider
+  @Inject lateinit var retrofitProvider: RetrofitProvider
   @Inject lateinit var analyticsComponent: AnalyticsComponent
   @Inject lateinit var sensorObject: SensorObject
 
@@ -44,18 +47,39 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent {
 
   override fun initialize() {
     (context as MpowApplication).appComponent.inject(this)
+
+
   }
 
   private fun makeHttpRequest(
     url: String,
     sensor: Sensor
-  ): Single<Measurements> {
+  )/*: Single<Measurements>*/ {
 
     Timber.d("Response map remove:${sensor.place}")
     responseMap!!.remove(sensor.place)
 
-    ionProvider.readSensorValues(
-      url, apiKey)
+
+    val service = RetrofitClientInstance.getRetrofitInstance().create(GetMeasurementsService::class.java)
+    val call = service.getAllMeasurements("AIRLY_CAQI", sensor.gpsLatitude, sensor.gpsLongitude)
+    call.enqueue(object : Callback<Measurements> {
+      override fun onFailure(call: Call<Measurements>, t: Throwable) {
+        Timber.d("mpow allMeasurements onFailure")
+      }
+
+      override fun onResponse(call: Call<Measurements>, response: Response<Measurements>) {
+        Timber.d("mpow allMeasurements onResponse")
+
+        response.let {
+          it.body()?.let { measurements ->
+            parseNewResult(sensor, measurements)
+          }
+        }
+      }
+    })
+
+//    ionProvider.readSensorValues(
+//      url, apiKey)
 
 //    var httpexc: Throwable? = null
 //    var httpres: JsonObject? = null
@@ -72,6 +96,14 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent {
 //    } else {
 //      parseResult(httpres, sensor)
 //    }
+
+
+  }
+
+  private fun parseNewResult(sensor: Sensor,
+    response: Measurements) {
+    responseMap!![sensor.place] = response
+    tryToShowResult()
   }
 
   override fun restartLoading(forceRefresh: Boolean) {
@@ -161,16 +193,16 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent {
       sensor?.let {
         val url = sensor.mapToUrl()
         url?.let {
-          //        makeHttpRequest(sensor.mapToUrl(), sensor)
-          val httpRequestObservable: Single<Measurements> =
-            makeHttpRequest(url, sensor)
-
-          httpRequestObservable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(
-              onSuccess = { print("listSensorsMeasurements SUCCESS" + it) },
-              onError = { print("listSensorsMeasurements ERROR" + it) }
-            )
+          makeHttpRequest(it, sensor)
+//          val httpRequestObservable: Single<Measurements> =
+//            makeHttpRequest(url, sensor)
+//
+//          httpRequestObservable.subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribeBy(
+//              onSuccess = { print("listSensorsMeasurements SUCCESS" + it) },
+//              onError = { print("listSensorsMeasurements ERROR" + it) }
+//            )
         }
       }
     }

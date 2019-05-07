@@ -152,7 +152,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
 
     while (iterator.hasNext()) {
       val entry = iterator.next() as Map.Entry<SensorPlace, Measurements>
-      val CAQI = entry.value.current.indexes[0].value.toDouble()
+      val CAQI = entry.value.current?.indexes?.get(0)?.value?.toDouble() ?: 0.0
       maxCAQI = Math.max(maxCAQI, CAQI)
       sumCAQI += CAQI
       countCAQI += 1
@@ -205,7 +205,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
         }
       }
 
-      val CAQI = sensorValues.current.values[0].value.toDouble()
+      val CAQI = sensorValues.current?.values?.get(0)?.value?.toDouble() ?: 0.0
       val scaledCAQI = (100 * CAQI / 50).toInt()
 
       progressToUpdate.max = maxCAQI.toInt()
@@ -222,10 +222,10 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
                              textViewToUpdatePm10: TextView) {
     val patternPm25 = "%1\$s%% (pm 2.5)"
     val patternPm10 = "%1\$s%% (pm  10)"
-    val pm25 = entry.value.current.standards[0].percent
-    val pm10 = entry.value.current.standards[1].percent
-    val infoPm25 = String.format(patternPm25, pm25.toInt())
-    val infoPm10 = String.format(patternPm10, pm10.toInt())
+    val pm25 = entry.value.current?.standards?.get(0)?.percent
+    val pm10 = entry.value.current?.standards?.get(1)?.percent
+    val infoPm25 = String.format(patternPm25, pm25?.toInt())
+    val infoPm10 = String.format(patternPm10, pm10?.toInt())
     textViewToUpdatePm25.text = infoPm25
     textViewToUpdatePm10.text = infoPm10
   }
