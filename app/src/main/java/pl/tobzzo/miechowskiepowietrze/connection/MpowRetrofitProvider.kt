@@ -5,10 +5,10 @@ import pl.tobzzo.miechowskiepowietrze.rest.retrofit.GetMeasurementsServiceCallba
 import pl.tobzzo.miechowskiepowietrze.rest.retrofit.RetrofitClientInstance
 import pl.tobzzo.miechowskiepowietrze.rest.v2.Measurements
 import pl.tobzzo.miechowskiepowietrze.sensor.Sensor
-import retrofit2.Call
+import pl.tobzzo.miechowskiepowietrze.utils.ApiKeyProvider
 import kotlin.reflect.KFunction2
 
-class MpowRetrofitProvider : RetrofitProvider {
+class MpowRetrofitProvider(private val apiKeyProvider: ApiKeyProvider) : RetrofitProvider {
   private val getMeasurementsService: GetMeasurementsService = RetrofitClientInstance.getRetrofitInstance().create(
     GetMeasurementsService::class.java)
 
@@ -16,7 +16,7 @@ class MpowRetrofitProvider : RetrofitProvider {
     name = "sensor") Sensor, @ParameterName(
     name = "response") Measurements, Unit>) {
 
-    return getMeasurementsService.getAllMeasurements(indexType, sensor.gpsLatitude, sensor.gpsLongitude).enqueue(
+    return getMeasurementsService.getAllMeasurements(apiKeyProvider.apiKey, indexType, sensor.gpsLatitude, sensor.gpsLongitude).enqueue(
       GetMeasurementsServiceCallback(sensor, action))
   }
 }

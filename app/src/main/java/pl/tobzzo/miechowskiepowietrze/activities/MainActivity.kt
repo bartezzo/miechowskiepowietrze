@@ -10,10 +10,7 @@ import android.widget.ScrollView
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
-import android.widget.Toast
 import com.daimajia.numberprogressbar.NumberProgressBar
-import io.reactivex.Completable
-import io.reactivex.rxkotlin.subscribeBy
 import pl.tobzzo.miechowskiepowietrze.MpowApplication
 import pl.tobzzo.miechowskiepowietrze.R.id
 import pl.tobzzo.miechowskiepowietrze.R.layout
@@ -30,11 +27,11 @@ import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_PARKOWE
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_RYNEK
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SIKORSKIEGO
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SZPITALNA
+import pl.tobzzo.miechowskiepowietrze.utils.ApiKeyProvider
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.bindView
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.isVisible
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.mapToBarColor
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.mapToLogoImage
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 private const val PM25_STANDARD = 25.0
@@ -47,6 +44,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
   @Inject lateinit var loggingManager: LoggingManager
   @Inject lateinit var networkComponent: NetworkComponent
   @Inject lateinit var analyticsComponent: AnalyticsComponent
+  @Inject lateinit var apiKeyProvider: ApiKeyProvider
 
   private val swipeLayout: SwipeRefreshLayout by bindView(id.swipe_container)
   private val sensorLoadingProgress: ProgressBar by bindView(id.sensorLoadingProgress)
@@ -96,6 +94,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
     loggingManager.initialize()
     networkComponent.initialize()
     analyticsComponent.initialize()
+    apiKeyProvider.initialize()
 
     networkComponent.attachNetworkListener(this)
   }

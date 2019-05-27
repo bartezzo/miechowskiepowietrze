@@ -16,6 +16,8 @@ import pl.tobzzo.miechowskiepowietrze.network.MpowNetworkComponent;
 import pl.tobzzo.miechowskiepowietrze.network.NetworkComponent;
 import pl.tobzzo.miechowskiepowietrze.sensor.MpowSensorObject;
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject;
+import pl.tobzzo.miechowskiepowietrze.utils.ApiKeyProvider;
+import pl.tobzzo.miechowskiepowietrze.utils.MpowApiKeyProvider;
 
 @Module
 public class AppModule {
@@ -31,16 +33,10 @@ public class AppModule {
     return context;
   }
 
-  //@Provides
-  //@Singleton
-  //public IonProvider provideIonProvider(Context context) {
-  //  return new MpowIonProvider(context);
-  //}
-
   @Provides
   @Singleton
-  public RetrofitProvider provideRetrofitProvider() {
-    return new MpowRetrofitProvider();
+  public RetrofitProvider provideRetrofitProvider(ApiKeyProvider apiKeyProvider) {
+    return new MpowRetrofitProvider(apiKeyProvider);
   }
 
   @Provides
@@ -60,5 +56,11 @@ public class AppModule {
   @Provides
   @Singleton
   public AnalyticsComponent provideAnalyticsComponent() {return new MpowAnalyticsComponent(context);}
+
+  @Provides
+  @Singleton
+  public ApiKeyProvider provideApiKeyProvider(Context context) {
+    return new MpowApiKeyProvider(context);
+  }
 
 }

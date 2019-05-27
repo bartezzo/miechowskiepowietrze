@@ -24,21 +24,10 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent {
   private var responseMap: MutableMap<SensorPlace, Measurements>? = null
   private val listeners = mutableListOf<NetworkListener>()
   private var lastLoading: Long = 0
-  private val apiKey: String
-    get() {
-      return (if (System.currentTimeMillis() % 2 == 0L)
-        BuildConfig.hiddenPassword1
-      else
-        BuildConfig.hiddenPassword2
-        ).also {
-        analyticsComponent.logAction("logAction", "onCreate")
-        Timber.d("api key:$it")
-      }
-    }
+
 
   override fun initialize() {
     (context as MpowApplication).appComponent.inject(this)
-
   }
 
   private fun makeHttpRequest(
