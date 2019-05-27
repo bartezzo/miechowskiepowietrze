@@ -15,7 +15,6 @@ import pl.tobzzo.miechowskiepowietrze.sensor.Sensor
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace
 import pl.tobzzo.miechowskiepowietrze.utils.TimeUtils
-import pl.tobzzo.miechowskiepowietrze.utils.extensions.mapToUrl
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -51,8 +50,11 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent {
 
   }
 
+  private fun getMeasurements(){
+
+  }
+
   private fun makeHttpRequest(
-    url: String,
     sensor: Sensor
   )/*: Single<Measurements>*/ {
 
@@ -64,7 +66,7 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent {
     val call = service.getAllMeasurements("AIRLY_CAQI", sensor.gpsLatitude, sensor.gpsLongitude)
     call.enqueue(object : Callback<Measurements> {
       override fun onFailure(call: Call<Measurements>, t: Throwable) {
-        Timber.d("mpow allMeasurements onFailure")
+        Timber.e("mpow allMeasurements onFailure")
       }
 
       override fun onResponse(call: Call<Measurements>, response: Response<Measurements>) {
@@ -191,9 +193,7 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent {
       val sensorPlace = iterator.next()
       val sensor = sensorObject.getSensor(sensorPlace)
       sensor?.let {
-        val url = sensor.mapToUrl()
-        url?.let {
-          makeHttpRequest(it, sensor)
+          makeHttpRequest(sensor)
 //          val httpRequestObservable: Single<Measurements> =
 //            makeHttpRequest(url, sensor)
 //
@@ -203,7 +203,6 @@ class MpowNetworkComponent(private val context: Context) : NetworkComponent {
 //              onSuccess = { print("listSensorsMeasurements SUCCESS" + it) },
 //              onError = { print("listSensorsMeasurements ERROR" + it) }
 //            )
-        }
       }
     }
   }
