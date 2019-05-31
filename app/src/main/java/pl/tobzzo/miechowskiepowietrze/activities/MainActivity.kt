@@ -1,7 +1,6 @@
 package pl.tobzzo.miechowskiepowietrze.activities
 
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.widget.ImageView
@@ -33,10 +32,6 @@ import pl.tobzzo.miechowskiepowietrze.utils.extensions.isVisible
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.mapToBarColor
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.mapToLogoImage
 import javax.inject.Inject
-
-private const val PM25_STANDARD = 25.0
-private const val PM10_STANDARD = 50.0
-private const val ANIMATION_TIME_IN_MS = 500
 
 class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, NetworkListener {
 
@@ -83,7 +78,6 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
   private val airQualityImageView: ImageView by bindView(id.airQualityImageView)
   private val sensorsScrollView: ScrollView by bindView(id.sensorsScrollView)
 
-  private var httpHandler: Handler? = null
   private var fakeCAQI = -1.0
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -124,8 +118,6 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
   }
 
   private fun setElements() {
-    httpHandler = Handler()
-
     swipeLayout.setOnRefreshListener(this)
     swipeLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
       android.R.color.holo_green_light,
@@ -218,7 +210,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
   }
 
   private fun setDetailsInfo(entry: Map.Entry<SensorPlace, Measurements>, textViewToUpdatePm25: TextView,
-                             textViewToUpdatePm10: TextView) {
+    textViewToUpdatePm10: TextView) {
     val patternPm25 = "%1\$s%% (pm 2.5)"
     val patternPm10 = "%1\$s%% (pm  10)"
     val pm25 = entry.value.current?.standards?.get(0)?.percent
@@ -231,22 +223,15 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
 
   override fun onResume() {
     super.onResume()
-
     analyticsComponent.logAction("logAction", "onResume")
     analyticsComponent.logScreen("MainActivity")
     networkComponent.restartLoading(false)
-
-
   }
 
 
   override fun onRefresh() {
     analyticsComponent.logAction("logAction", "onRefresh")
-
-    httpHandler!!.postDelayed({
-      networkComponent.restartLoading(true)
-      swipeLayout.isRefreshing = false
-    }, 5000)
-
+    networkComponent.restartLoading(true)
+    swipeLayout.isRefreshing = false
   }
 }
