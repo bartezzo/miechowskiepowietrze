@@ -1,7 +1,7 @@
 package pl.tobzzo.miechowskiepowietrze.activities
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import pl.tobzzo.miechowskiepowietrze.MpowApplication
 import pl.tobzzo.miechowskiepowietrze.database.DataBaseManager
 import javax.inject.Inject
