@@ -14,6 +14,8 @@ import pl.tobzzo.miechowskiepowietrze.MpowApplication
 import pl.tobzzo.miechowskiepowietrze.R.id
 import pl.tobzzo.miechowskiepowietrze.R.layout
 import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
+import pl.tobzzo.miechowskiepowietrze.arch.mvp.MainActivityPresenter
+import pl.tobzzo.miechowskiepowietrze.arch.mvp.MainActivityView
 import pl.tobzzo.miechowskiepowietrze.logging.LoggingManager
 import pl.tobzzo.miechowskiepowietrze.network.NetworkComponent
 import pl.tobzzo.miechowskiepowietrze.network.NetworkListener
@@ -33,13 +35,16 @@ import pl.tobzzo.miechowskiepowietrze.utils.extensions.mapToBarColor
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.mapToLogoImage
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, NetworkListener {
+class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, NetworkListener, MainActivityView {
+
 
   @Inject lateinit var sensorObject: SensorObject
   @Inject lateinit var loggingManager: LoggingManager
   @Inject lateinit var networkComponent: NetworkComponent
   @Inject lateinit var analyticsComponent: AnalyticsComponent
   @Inject lateinit var apiKeyProvider: ApiKeyProvider
+
+  private lateinit var presenter: MainActivityPresenter
 
   private val swipeLayout: SwipeRefreshLayout by bindView(id.swipe_container)
   private val sensorLoadingProgress: ProgressBar by bindView(id.sensorLoadingProgress)
@@ -91,6 +96,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
     apiKeyProvider.initialize()
 
     networkComponent.attachNetworkListener(this)
+    presenter = MainActivityPresenter(this)
   }
 
   override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -115,6 +121,18 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
     setGlobalChart()
     sensorLoadingProgress.isVisible = false
     sensorResultTable.isVisible = true
+  }
+
+  override fun updateChart() {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  }
+
+  override fun showChart() {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  }
+
+  override fun hideChart() {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 
   private fun setElements() {

@@ -1,6 +1,6 @@
 package pl.tobzzo.miechowskiepowietrze.arch.mvp
 
-interface View {
+interface MainActivityView {
   fun updateChart()
   fun showChart()
   fun hideChart()
