@@ -1,18 +1,12 @@
 package pl.tobzzo.miechowskiepowietrze.activities
 
 import android.os.Bundle
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.appcompat.app.AppCompatActivity
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.ScrollView
-import android.widget.TableLayout
-import android.widget.TableRow
 import android.widget.TextView
-import com.daimajia.numberprogressbar.NumberProgressBar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import pl.tobzzo.miechowskiepowietrze.MpowApplication
-import pl.tobzzo.miechowskiepowietrze.R.id
-import pl.tobzzo.miechowskiepowietrze.R.layout
+import pl.tobzzo.miechowskiepowietrze.R
 import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
 import pl.tobzzo.miechowskiepowietrze.arch.mvp.MainActivityPresenter
 import pl.tobzzo.miechowskiepowietrze.arch.mvp.MainActivityView
@@ -22,18 +16,10 @@ import pl.tobzzo.miechowskiepowietrze.network.NetworkListener
 import pl.tobzzo.miechowskiepowietrze.rest.v2.Measurements
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace
-import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_KOPERNIKA
-import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_KROTKA
-import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_PARKOWE
-import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_RYNEK
-import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SIKORSKIEGO
-import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SZPITALNA
 import pl.tobzzo.miechowskiepowietrze.utils.ApiKeyProvider
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.bindView
-import pl.tobzzo.miechowskiepowietrze.utils.extensions.isVisible
-import pl.tobzzo.miechowskiepowietrze.utils.extensions.mapToBarColor
-import pl.tobzzo.miechowskiepowietrze.utils.extensions.mapToLogoImage
 import javax.inject.Inject
+
 
 class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, NetworkListener, MainActivityView {
 
@@ -46,8 +32,9 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
 
   private lateinit var presenter: MainActivityPresenter
 
+  private val bottomNavigation: BottomNavigationView by bindView(R.id.bottom_navigation)
+/*
   private val swipeLayout: SwipeRefreshLayout by bindView(id.swipe_container)
-  private val sensorLoadingProgress: ProgressBar by bindView(id.sensorLoadingProgress)
   private val sensorResultTable: TableLayout by bindView(id.sensorResultTable)
 
   private val sensorSikorskiego: TableRow by bindView(id.sensorSikorskiego)
@@ -82,12 +69,13 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
 
   private val airQualityImageView: ImageView by bindView(id.airQualityImageView)
   private val sensorsScrollView: ScrollView by bindView(id.sensorsScrollView)
+*/
 
   private var fakeCAQI = -1.0
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(layout.activity_main)
+    setContentView(R.layout.activity_main)
 
     (this.application as MpowApplication).appComponent.inject(this)
     loggingManager.initialize()
@@ -113,14 +101,12 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
   }
 
   override fun onValuesLoading() {
-    sensorLoadingProgress.isVisible = true
-    sensorResultTable.isVisible = false
+//    sensorResultTable.isVisible = false
   }
 
   override fun onValuesAvailable() {
     setGlobalChart()
-    sensorLoadingProgress.isVisible = false
-    sensorResultTable.isVisible = true
+//    sensorResultTable.isVisible = true
   }
 
   override fun updateChart() {
@@ -136,22 +122,38 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
   }
 
   private fun setElements() {
+    /*
     swipeLayout.setOnRefreshListener(this)
     swipeLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
       android.R.color.holo_green_light,
       android.R.color.holo_orange_light,
       android.R.color.holo_red_light)
+      */
   }
 
   private fun setListeners() {
+    /*
     airQualityImageView.setOnClickListener {
       analyticsComponent.logAction("logAction", "airQualityImageView")
       fakeCAQI = (fakeCAQI + 25) % 168 - 1
       airQualityImageView.setImageResource(fakeCAQI.mapToLogoImage())
     }
+    */
+
+    bottomNavigation.setOnNavigationItemSelectedListener {item ->
+      when(item.itemId){
+        R.id.action_main -> {}
+
+        R.id.action_favorite -> {}
+
+        R.id.action_settings -> {}
+      }
+      return@setOnNavigationItemSelectedListener true
+    }
   }
 
   private fun setGlobalChart() {
+    /*
     var iterator: Iterator<*> = networkComponent.getResponseMap()!!.entries.iterator()
     var maxCAQI = 0.0
     var scaledMaxCAQI = 0
@@ -225,6 +227,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
     }
 
     airQualityImageView.setImageResource(avgCAQI.mapToLogoImage())
+    */
   }
 
   private fun setDetailsInfo(entry: Map.Entry<SensorPlace, Measurements>, textViewToUpdatePm25: TextView,
@@ -250,6 +253,6 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
   override fun onRefresh() {
     analyticsComponent.logAction("logAction", "onRefresh")
     networkComponent.restartLoading(true)
-    swipeLayout.isRefreshing = false
+//    swipeLayout.isRefreshing = false
   }
 }
