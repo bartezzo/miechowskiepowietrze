@@ -11,7 +11,6 @@ class MpowAnalyticsComponent(private val context: Context) : AnalyticsComponent{
   private var mTracker: Tracker? = null
 
   override fun initialize() {
-    (context as MpowApplication).appComponent.inject(this)
     setGoogleAnalytics()
   }
 

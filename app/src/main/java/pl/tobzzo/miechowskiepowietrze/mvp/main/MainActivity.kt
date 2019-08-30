@@ -1,37 +1,37 @@
-package pl.tobzzo.miechowskiepowietrze.activities
+package pl.tobzzo.miechowskiepowietrze.mvp.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import pl.tobzzo.miechowskiepowietrze.MpowApplication
+import dagger.android.AndroidInjection
 import pl.tobzzo.miechowskiepowietrze.R
 import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
-import pl.tobzzo.miechowskiepowietrze.arch.mvp.MainActivityPresenter
-import pl.tobzzo.miechowskiepowietrze.arch.mvp.MainActivityView
 import pl.tobzzo.miechowskiepowietrze.logging.LoggingManager
-import pl.tobzzo.miechowskiepowietrze.network.NetworkComponent
+import pl.tobzzo.miechowskiepowietrze.main.NavigationItem.Favorite
+import pl.tobzzo.miechowskiepowietrze.main.NavigationItem.Main
+import pl.tobzzo.miechowskiepowietrze.main.NavigationItem.Settings
+import pl.tobzzo.miechowskiepowietrze.mvp.sensor.SensorActivity
 import pl.tobzzo.miechowskiepowietrze.network.NetworkListener
 import pl.tobzzo.miechowskiepowietrze.rest.v2.Measurements
-import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace
 import pl.tobzzo.miechowskiepowietrze.utils.ApiKeyProvider
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.bindView
+import timber.log.Timber
 import javax.inject.Inject
 
 
-class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, NetworkListener, MainActivityView {
+class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, NetworkListener, MainContract.MainView {
 
-
-  @Inject lateinit var sensorObject: SensorObject
+//  @Inject lateinit var sensorObject: SensorObject
   @Inject lateinit var loggingManager: LoggingManager
-  @Inject lateinit var networkComponent: NetworkComponent
+//  @Inject lateinit var networkComponent: NetworkComponent
   @Inject lateinit var analyticsComponent: AnalyticsComponent
   @Inject lateinit var apiKeyProvider: ApiKeyProvider
 
-  private lateinit var presenter: MainActivityPresenter
-
+  @Inject lateinit var presenter: MainPresenter
   private val bottomNavigation: BottomNavigationView by bindView(R.id.bottom_navigation)
 /*
   private val swipeLayout: SwipeRefreshLayout by bindView(id.swipe_container)
@@ -74,17 +74,18 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
   private var fakeCAQI = -1.0
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    AndroidInjection.inject(this)
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
 
-    (this.application as MpowApplication).appComponent.inject(this)
-    loggingManager.initialize()
-    networkComponent.initialize()
-    analyticsComponent.initialize()
-    apiKeyProvider.initialize()
 
-    networkComponent.attachNetworkListener(this)
-    presenter = MainActivityPresenter(this)
+//    loggingManager.initialize()
+//    networkComponent.initialize()
+    analyticsComponent.initialize()
+//    apiKeyProvider.initialize()
+//
+//    networkComponent.attachNetworkListener(this)
+    Timber.d("apiKeyProvider.apiKey: ${apiKeyProvider.apiKey}")
   }
 
   override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -97,7 +98,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
 
   override fun onDestroy() {
     super.onDestroy()
-    networkComponent.detachNetworkListener(this)
+//    networkComponent.detachNetworkListener(this)
   }
 
   override fun onValuesLoading() {
@@ -110,15 +111,16 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
   }
 
   override fun updateChart() {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
   }
 
   override fun showChart() {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    startActivity(Intent(this, SensorActivity::class.java))
+    finish()
   }
 
   override fun hideChart() {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
   }
 
   private fun setElements() {
@@ -140,13 +142,19 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
     }
     */
 
-    bottomNavigation.setOnNavigationItemSelectedListener {item ->
-      when(item.itemId){
-        R.id.action_main -> {}
+    bottomNavigation.setOnNavigationItemSelectedListener { item ->
+      when (item.itemId) {
+        R.id.action_main -> {
+          presenter.onNavigationItemClicked(Main)
+        }
 
-        R.id.action_favorite -> {}
+        R.id.action_favorite -> {
+          presenter.onNavigationItemClicked(Favorite)
+        }
 
-        R.id.action_settings -> {}
+        R.id.action_settings -> {
+          presenter.onNavigationItemClicked(Settings)
+        }
       }
       return@setOnNavigationItemSelectedListener true
     }
@@ -246,13 +254,13 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
     super.onResume()
     analyticsComponent.logAction("logAction", "onResume")
     analyticsComponent.logScreen("MainActivity")
-    networkComponent.restartLoading(false)
+//    networkComponent.restartLoading(false)
   }
 
 
   override fun onRefresh() {
     analyticsComponent.logAction("logAction", "onRefresh")
-    networkComponent.restartLoading(true)
+//    networkComponent.restartLoading(true)
 //    swipeLayout.isRefreshing = false
   }
 }

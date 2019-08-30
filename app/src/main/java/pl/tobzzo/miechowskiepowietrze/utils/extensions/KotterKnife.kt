@@ -97,7 +97,7 @@ private val ViewHolder.viewFinder: ViewHolder.(Int) -> View?
   get() = { itemView.findViewById(it) }
 
 private fun viewNotFound(id:Int, desc: KProperty<*>): Nothing =
-  throw IllegalStateException("View ID $id for '${desc.name}' not found.")
+  throw IllegalStateException("MainView ID $id for '${desc.name}' not found.")
 
 @Suppress("UNCHECKED_CAST")
 private fun <T, V : View> required(id: Int, finder: T.(Int) -> View?)

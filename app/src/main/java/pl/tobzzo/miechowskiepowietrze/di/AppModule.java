@@ -1,0 +1,78 @@
+package pl.tobzzo.miechowskiepowietrze.di;
+
+import android.content.Context;
+import dagger.Module;
+import dagger.Provides;
+import javax.inject.Singleton;
+import pl.tobzzo.miechowskiepowietrze.MpowApplication;
+import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent;
+import pl.tobzzo.miechowskiepowietrze.analytics.MpowAnalyticsComponent;
+import pl.tobzzo.miechowskiepowietrze.connection.MpowRetrofitProvider;
+import pl.tobzzo.miechowskiepowietrze.connection.RetrofitProvider;
+import pl.tobzzo.miechowskiepowietrze.logging.LoggingManager;
+import pl.tobzzo.miechowskiepowietrze.logging.MpowLoggingManager;
+import pl.tobzzo.miechowskiepowietrze.utils.ApiKeyProvider;
+import pl.tobzzo.miechowskiepowietrze.utils.MpowApiKeyProvider;
+//import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent;
+//import pl.tobzzo.miechowskiepowietrze.analytics.MpowAnalyticsComponent;
+//import pl.tobzzo.miechowskiepowietrze.connection.MpowRetrofitProvider;
+//import pl.tobzzo.miechowskiepowietrze.connection.RetrofitProvider;
+//import pl.tobzzo.miechowskiepowietrze.logging.LoggingManager;
+//import pl.tobzzo.miechowskiepowietrze.logging.MpowLoggingManager;
+//import pl.tobzzo.miechowskiepowietrze.network.MpowNetworkComponent;
+//import pl.tobzzo.miechowskiepowietrze.network.NetworkComponent;
+//import pl.tobzzo.miechowskiepowietrze.sensor.MpowSensorObject;
+//import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject;MpowApplication
+//import pl.tobzzo.miechowskiepowietrze.utils.ApiKeyProvider;
+//import pl.tobzzo.miechowskiepowietrze.utils.MpowApiKeyProvider;
+
+@Module public class AppModule {
+  //protected Context context;
+  //
+  //public AppModule(Context context) {
+  //  this.context = context;
+  //}
+  //
+  //@Provides
+  //@Singleton
+  //public Context provideContext() {
+  //  return context;
+  //}
+  //
+  //@Provides
+  //@Singleton
+  //public RetrofitProvider provideRetrofitProvider(ApiKeyProvider apiKeyProvider) {
+  //  return new MpowRetrofitProvider(apiKeyProvider);
+  //}
+  //
+  //@Provides
+  //@Singleton
+  //public SensorObject provideSensorObject() {
+  //  return new MpowSensorObject();
+  //}
+  //
+  @Provides
+  @Singleton
+  public LoggingManager provideLoggingManager(Context context) { return new MpowLoggingManager(context); }
+
+  //@Provides
+  //@Singleton
+  //public NetworkComponent provideNetworkCompnent() {return new MpowNetworkComponent(context);}
+  //
+
+  @Provides
+  @Singleton
+  public AnalyticsComponent provideAnalyticsComponent(Context context) {return new MpowAnalyticsComponent(context);}
+
+  @Provides
+  @Singleton
+  public ApiKeyProvider provideApiKeyProvider(Context context) {
+    return new MpowApiKeyProvider(context);
+  }
+
+  @Provides
+  @Singleton
+  Context provideContext(MpowApplication application) {
+    return application.getApplicationContext();
+  }
+}
