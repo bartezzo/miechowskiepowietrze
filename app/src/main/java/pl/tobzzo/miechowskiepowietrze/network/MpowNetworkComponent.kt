@@ -2,7 +2,7 @@
 //
 //import android.content.Context
 //import pl.tobzzo.miechowskiepowietrze.BuildConfig
-//import pl.tobzzo.miechowskiepowietrze.MpowApplication
+//import pl.tobzzo.miechowskiepowietrze.app.MpowApplication
 //import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
 //import pl.tobzzo.miechowskiepowietrze.connection.RetrofitProvider
 //import pl.tobzzo.miechowskiepowietrze.rest.retrofit.GetMeasurementsServiceCallback

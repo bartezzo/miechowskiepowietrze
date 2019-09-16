@@ -1,13 +1,23 @@
 package pl.tobzzo.miechowskiepowietrze.mvp.sensor
 
 import pl.tobzzo.miechowskiepowietrze.main.NavigationItem
-import pl.tobzzo.miechowskiepowietrze.mvp.base.BasePresenter
-import pl.tobzzo.miechowskiepowietrze.mvp.sensor.SensorContract.SensorPresenter
-import pl.tobzzo.miechowskiepowietrze.mvp.sensor.SensorContract.SensorView
+import pl.tobzzo.miechowskiepowietrze.mvp.sensor.SensorContract.View
+import javax.inject.Inject
 
-class SensorPresenter(view: SensorView) : BasePresenter<SensorView>(view), SensorPresenter {
+class SensorPresenter @Inject
+constructor() : SensorContract.Presenter {
+  private var mView: SensorContract.View? = null
+
   override fun onNavigationItemClicked(main: NavigationItem) {
-    view.showChart()
+    mView?.showChart()
+  }
+
+  override fun takeView(view: View) {
+    mView = view
+  }
+
+  override fun dropView() {
+    mView = null
   }
 
 }

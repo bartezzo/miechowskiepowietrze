@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/mainBgColor"
-    tools:context="pl.tobzzo.miechowskiepowietrze.mvp.main.MainActivity"
+    tools:context="pl.tobzzo.miechowskiepowietrze.mvp.login.LoginActivity"
     >
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

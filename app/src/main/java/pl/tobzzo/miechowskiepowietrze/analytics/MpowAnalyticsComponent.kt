@@ -4,7 +4,6 @@ import android.content.Context
 import com.google.android.gms.analytics.HitBuilders
 import com.google.android.gms.analytics.Tracker
 import pl.tobzzo.miechowskiepowietrze.AnalyticsApplication
-import pl.tobzzo.miechowskiepowietrze.MpowApplication
 
 class MpowAnalyticsComponent(private val context: Context) : AnalyticsComponent{
 

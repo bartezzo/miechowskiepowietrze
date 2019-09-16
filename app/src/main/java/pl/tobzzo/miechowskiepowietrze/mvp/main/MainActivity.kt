@@ -3,35 +3,28 @@ package pl.tobzzo.miechowskiepowietrze.mvp.main
 import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import dagger.android.AndroidInjection
 import pl.tobzzo.miechowskiepowietrze.R
-import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
-import pl.tobzzo.miechowskiepowietrze.logging.LoggingManager
 import pl.tobzzo.miechowskiepowietrze.main.NavigationItem.Favorite
 import pl.tobzzo.miechowskiepowietrze.main.NavigationItem.Main
 import pl.tobzzo.miechowskiepowietrze.main.NavigationItem.Settings
+import pl.tobzzo.miechowskiepowietrze.mvp.base.BaseActivity
 import pl.tobzzo.miechowskiepowietrze.mvp.sensor.SensorActivity
-import pl.tobzzo.miechowskiepowietrze.network.NetworkListener
 import pl.tobzzo.miechowskiepowietrze.rest.v2.Measurements
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace
-import pl.tobzzo.miechowskiepowietrze.utils.ApiKeyProvider
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.bindView
-import timber.log.Timber
 import javax.inject.Inject
 
 
-class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, NetworkListener, MainContract.MainView {
+class MainActivity : BaseActivity(), MainContract.View {
 
 //  @Inject lateinit var sensorObject: SensorObject
-  @Inject lateinit var loggingManager: LoggingManager
+//  @Inject lateinit var loggingManager: LoggingManager
 //  @Inject lateinit var networkComponent: NetworkComponent
-  @Inject lateinit var analyticsComponent: AnalyticsComponent
-  @Inject lateinit var apiKeyProvider: ApiKeyProvider
+//  @Inject lateinit var analyticsComponent: AnalyticsComponent
+//  @Inject lateinit var apiKeyProvider: ApiKeyProvider
 
-  @Inject lateinit var presenter: MainPresenter
+  @Inject lateinit var loginPresenter: MainPresenter
   private val bottomNavigation: BottomNavigationView by bindView(R.id.bottom_navigation)
 /*
   private val swipeLayout: SwipeRefreshLayout by bindView(id.swipe_container)
@@ -71,44 +64,61 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
   private val sensorsScrollView: ScrollView by bindView(id.sensorsScrollView)
 */
 
-  private var fakeCAQI = -1.0
+  override fun getLayoutResId(): Int = R.layout.activity_main
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    AndroidInjection.inject(this)
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main)
-
-
-//    loggingManager.initialize()
-//    networkComponent.initialize()
-    analyticsComponent.initialize()
-//    apiKeyProvider.initialize()
-//
-//    networkComponent.attachNetworkListener(this)
-    Timber.d("apiKeyProvider.apiKey: ${apiKeyProvider.apiKey}")
+  override fun init() {
+    super.init()
   }
 
-  override fun onPostCreate(savedInstanceState: Bundle?) {
-    super.onPostCreate(savedInstanceState)
-
-    analyticsComponent.logAction("logAction", "onCreate")
-    setElements()
-    setListeners()
+  override fun onResume() {
+    super.onResume()
+    loginPresenter.takeView(this)
+//    analyticsComponent.logAction("logAction", "onResume")
+//    analyticsComponent.logScreen("LoginActivity")
+//    networkComponent.restartLoading(false)
   }
 
   override fun onDestroy() {
     super.onDestroy()
 //    networkComponent.detachNetworkListener(this)
+    loginPresenter.dropView()
   }
 
-  override fun onValuesLoading() {
+
+  private var fakeCAQI = -1.0
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+//    AndroidInjection.inject(this)
+    super.onCreate(savedInstanceState)
+
+
+//    loggingManager.initialize()
+//    networkComponent.initialize()
+//    analyticsComponent.initialize()
+//    apiKeyProvider.initialize()
+//
+//    networkComponent.attachNetworkListener(this)
+//    Timber.d("apiKeyProvider.apiKey: ${apiKeyProvider.apiKey}")
+  }
+
+//  override fun onPostCreate(savedInstanceState: Bundle?) {
+//    super.onPostCreate(savedInstanceState)
+
+//    analyticsComponent.logAction("logAction", "onCreate")
+//    setElements()
+//    setListeners()
+//  }
+//  override fun onValuesLoading() {
 //    sensorResultTable.isVisible = false
-  }
+//  }
 
-  override fun onValuesAvailable() {
-    setGlobalChart()
+//  override fun onValuesAvailable() {
+//    setGlobalChart()
 //    sensorResultTable.isVisible = true
-  }
+//  }
+
+
+
 
   override fun updateChart() {
 
@@ -133,7 +143,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
       */
   }
 
-  private fun setListeners() {
+  override fun setListeners() {
     /*
     airQualityImageView.setOnClickListener {
       analyticsComponent.logAction("logAction", "airQualityImageView")
@@ -145,15 +155,15 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
     bottomNavigation.setOnNavigationItemSelectedListener { item ->
       when (item.itemId) {
         R.id.action_main -> {
-          presenter.onNavigationItemClicked(Main)
+          loginPresenter.onNavigationItemClicked(Main)
         }
 
         R.id.action_favorite -> {
-          presenter.onNavigationItemClicked(Favorite)
+          loginPresenter.onNavigationItemClicked(Favorite)
         }
 
         R.id.action_settings -> {
-          presenter.onNavigationItemClicked(Settings)
+          loginPresenter.onNavigationItemClicked(Settings)
         }
       }
       return@setOnNavigationItemSelectedListener true
@@ -250,17 +260,10 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
     textViewToUpdatePm10.text = infoPm10
   }
 
-  override fun onResume() {
-    super.onResume()
-    analyticsComponent.logAction("logAction", "onResume")
-    analyticsComponent.logScreen("MainActivity")
-//    networkComponent.restartLoading(false)
-  }
 
-
-  override fun onRefresh() {
-    analyticsComponent.logAction("logAction", "onRefresh")
+//  override fun onRefresh() {
+//    analyticsComponent.logAction("logAction", "onRefresh")
 //    networkComponent.restartLoading(true)
 //    swipeLayout.isRefreshing = false
-  }
+//  }
 }

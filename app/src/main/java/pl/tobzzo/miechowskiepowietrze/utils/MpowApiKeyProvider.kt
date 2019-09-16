@@ -2,7 +2,6 @@ package pl.tobzzo.miechowskiepowietrze.utils
 
 import android.content.Context
 import pl.tobzzo.miechowskiepowietrze.BuildConfig
-import pl.tobzzo.miechowskiepowietrze.MpowApplication
 import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
 import timber.log.Timber
 import javax.inject.Inject

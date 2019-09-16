@@ -17,7 +17,7 @@
 //import com.github.mikephil.charting.data.BarData
 //import com.github.mikephil.charting.data.BarDataSet
 //import com.github.mikephil.charting.data.BarEntry
-//import pl.tobzzo.miechowskiepowietrze.MpowApplication
+//import pl.tobzzo.miechowskiepowietrze.app.MpowApplication
 //import pl.tobzzo.miechowskiepowietrze.R.id
 //import pl.tobzzo.miechowskiepowietrze.R.layout
 //import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
@@ -372,7 +372,7 @@
 //    super.onResume()
 //
 //    analyticsComponent.logAction("logAction", "onResume")
-//    analyticsComponent.logScreen("MainActivity")
+//    analyticsComponent.logScreen("LoginActivity")
 //    networkComponent.restartLoading(false)
 //  }
 //

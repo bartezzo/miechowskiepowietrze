@@ -2,32 +2,35 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="pl.tobzzo.miechowskiepowietrze">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-
-    <application
-        android:name=".MpowApplication"
-        android:allowBackup="true"
-        android:icon="@drawable/logo"
-        android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+  <application
+      android:name=".app.MpowApplication"
+      android:allowBackup="true"
+      android:icon="@mipmap/ic_launcher"
+      android:label="@string/app_name"
+      android:supportsRtl="true"
+      android:theme="@style/AppTheme">
 
 
-        <activity android:name=".mvp.main.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+    <activity
+        android:name=".mvp.splash.SplashActivity"
+        android:screenOrientation="portrait"
+        android:theme="@style/TransparentStatusBarTheme">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
 
-        <activity android:name=".mvp.sensor.SensorActivity"/>
+    <activity
+        android:name=".mvp.main.MainActivity"
+        android:screenOrientation="portrait"
+        android:theme="@style/TransparentStatusBarTheme" />
 
-        <service android:name="com.google.android.gms.analytics.AnalyticsService"
-            android:enabled="true"
-            android:exported="false"/>
+  </application>
 
-    </application>
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+  <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>
