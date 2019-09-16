@@ -24,7 +24,7 @@ class MainActivity : BaseActivity(), MainContract.View {
 //  @Inject lateinit var analyticsComponent: AnalyticsComponent
 //  @Inject lateinit var apiKeyProvider: ApiKeyProvider
 
-  @Inject lateinit var loginPresenter: MainPresenter
+  @Inject lateinit var mainPresenter: MainPresenter
   private val bottomNavigation: BottomNavigationView by bindView(R.id.bottom_navigation)
 /*
   private val swipeLayout: SwipeRefreshLayout by bindView(id.swipe_container)
@@ -72,7 +72,7 @@ class MainActivity : BaseActivity(), MainContract.View {
 
   override fun onResume() {
     super.onResume()
-    loginPresenter.takeView(this)
+    mainPresenter.takeView(this)
 //    analyticsComponent.logAction("logAction", "onResume")
 //    analyticsComponent.logScreen("LoginActivity")
 //    networkComponent.restartLoading(false)
@@ -81,7 +81,7 @@ class MainActivity : BaseActivity(), MainContract.View {
   override fun onDestroy() {
     super.onDestroy()
 //    networkComponent.detachNetworkListener(this)
-    loginPresenter.dropView()
+    mainPresenter.dropView()
   }
 
 
@@ -155,15 +155,15 @@ class MainActivity : BaseActivity(), MainContract.View {
     bottomNavigation.setOnNavigationItemSelectedListener { item ->
       when (item.itemId) {
         R.id.action_main -> {
-          loginPresenter.onNavigationItemClicked(Main)
+          mainPresenter.onNavigationItemClicked(Main)
         }
 
         R.id.action_favorite -> {
-          loginPresenter.onNavigationItemClicked(Favorite)
+          mainPresenter.onNavigationItemClicked(Favorite)
         }
 
         R.id.action_settings -> {
-          loginPresenter.onNavigationItemClicked(Settings)
+          mainPresenter.onNavigationItemClicked(Settings)
         }
       }
       return@setOnNavigationItemSelectedListener true
