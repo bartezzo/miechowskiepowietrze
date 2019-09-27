@@ -6,6 +6,7 @@ import dagger.Component
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
 import dagger.android.support.AndroidSupportInjectionModule
+import pl.tobzzo.miechowskiepowietrze.app.MpowApplication
 import javax.inject.Singleton
 
 @Singleton
@@ -14,15 +15,15 @@ import javax.inject.Singleton
         AndroidSupportInjectionModule::class
         ))
 
-interface AppComponent : AndroidInjector<DaggerApplication> {
+interface AppComponent : AndroidInjector<MpowApplication> {
 
-    override fun inject(instance: DaggerApplication)
+    override fun inject(instance: MpowApplication)
 
     @Component.Builder
     interface Builder {
 
         @BindsInstance
-        fun application(application: Application): Builder
+        fun application(application: MpowApplication): Builder
 
         fun build(): AppComponent
     }

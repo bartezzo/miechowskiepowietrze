@@ -4,12 +4,13 @@ import android.content.Context
 import com.google.android.gms.analytics.HitBuilders
 import com.google.android.gms.analytics.Tracker
 import pl.tobzzo.miechowskiepowietrze.AnalyticsApplication
+import javax.inject.Inject
 
-class MpowAnalyticsComponent(private val context: Context) : AnalyticsComponent{
+class MpowAnalyticsComponent @Inject constructor(private val context: Context) : AnalyticsComponent{
 
   private var mTracker: Tracker? = null
 
-  override fun initialize() {
+  init {
     setGoogleAnalytics()
   }
 

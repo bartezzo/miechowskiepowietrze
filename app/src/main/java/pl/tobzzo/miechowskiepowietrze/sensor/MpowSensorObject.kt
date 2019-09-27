@@ -7,8 +7,9 @@ import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_RYNEK
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SIKORSKIEGO
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SREDNIA
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SZPITALNA
+import javax.inject.Inject
 
-class MpowSensorObject : SensorObject{
+class MpowSensorObject @Inject constructor() : SensorObject{
   override var activeSensors = mutableListOf<SensorPlace>()
 
   override fun getSensor(sensorPlace: SensorPlace): Sensor? = sensors.find { sensorPlace == it.place }

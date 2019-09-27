@@ -3,6 +3,7 @@ package pl.tobzzo.miechowskiepowietrze.mvp.sensor
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import pl.tobzzo.miechowskiepowietrze.R
+import pl.tobzzo.miechowskiepowietrze.example.ExampleInterface
 import pl.tobzzo.miechowskiepowietrze.main.NavigationItem.Favorite
 import pl.tobzzo.miechowskiepowietrze.main.NavigationItem.Main
 import pl.tobzzo.miechowskiepowietrze.main.NavigationItem.Settings
@@ -13,6 +14,8 @@ import javax.inject.Inject
 class SensorActivity : BaseActivity(), SensorContract.View {
 
   @Inject lateinit var sensorPresenter: SensorPresenter
+  @Inject lateinit var exampleClass: ExampleInterface
+
   private val bottomNavigation: BottomNavigationView by bindView(R.id.bottom_navigation)
 
   override fun getLayoutResId(): Int = R.layout.activity_main

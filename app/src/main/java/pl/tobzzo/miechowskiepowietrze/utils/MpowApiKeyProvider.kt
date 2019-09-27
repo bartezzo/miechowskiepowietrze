@@ -6,12 +6,7 @@ import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
 import timber.log.Timber
 import javax.inject.Inject
 
-class MpowApiKeyProvider(private val context: Context) : ApiKeyProvider{
-  @Inject lateinit var analyticsComponent: AnalyticsComponent
-
-//  override fun initialize() {
-//    (context as MpowApplication).appComponent.inject(this)
-//  }
+class MpowApiKeyProvider @Inject constructor(val context: Context, val analyticsComponent: AnalyticsComponent) : ApiKeyProvider{
 
   override val apiKey: String
     get() {

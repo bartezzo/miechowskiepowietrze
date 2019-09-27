@@ -3,28 +3,44 @@ package pl.tobzzo.miechowskiepowietrze.mvp.main
 import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
+import com.daimajia.numberprogressbar.NumberProgressBar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import pl.tobzzo.miechowskiepowietrze.R
+import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
+import pl.tobzzo.miechowskiepowietrze.example.ExampleInterface
+import pl.tobzzo.miechowskiepowietrze.logging.LoggingManager
 import pl.tobzzo.miechowskiepowietrze.main.NavigationItem.Favorite
 import pl.tobzzo.miechowskiepowietrze.main.NavigationItem.Main
 import pl.tobzzo.miechowskiepowietrze.main.NavigationItem.Settings
 import pl.tobzzo.miechowskiepowietrze.mvp.base.BaseActivity
 import pl.tobzzo.miechowskiepowietrze.mvp.sensor.SensorActivity
+import pl.tobzzo.miechowskiepowietrze.network.NetworkComponent
+import pl.tobzzo.miechowskiepowietrze.network.NetworkListener
 import pl.tobzzo.miechowskiepowietrze.rest.v2.Measurements
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_KOPERNIKA
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_KROTKA
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_PARKOWE
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_RYNEK
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SIKORSKIEGO
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SZPITALNA
+import pl.tobzzo.miechowskiepowietrze.utils.ApiKeyProvider
 import pl.tobzzo.miechowskiepowietrze.utils.extensions.bindView
+import timber.log.Timber
 import javax.inject.Inject
 
 
-class MainActivity : BaseActivity(), MainContract.View {
+class MainActivity : BaseActivity(), MainContract.View, NetworkListener {
 
-//  @Inject lateinit var sensorObject: SensorObject
-//  @Inject lateinit var loggingManager: LoggingManager
-//  @Inject lateinit var networkComponent: NetworkComponent
-//  @Inject lateinit var analyticsComponent: AnalyticsComponent
-//  @Inject lateinit var apiKeyProvider: ApiKeyProvider
-
+  @Inject lateinit var sensorObject: SensorObject
+  @Inject lateinit var loggingManager: LoggingManager
+  @Inject lateinit var networkComponent: NetworkComponent
+  @Inject lateinit var analyticsComponent: AnalyticsComponent
+  @Inject lateinit var apiKeyProvider: ApiKeyProvider
   @Inject lateinit var mainPresenter: MainPresenter
+  @Inject lateinit var exampleClass: ExampleInterface
+
   private val bottomNavigation: BottomNavigationView by bindView(R.id.bottom_navigation)
 /*
   private val swipeLayout: SwipeRefreshLayout by bindView(id.swipe_container)
@@ -73,14 +89,14 @@ class MainActivity : BaseActivity(), MainContract.View {
   override fun onResume() {
     super.onResume()
     mainPresenter.takeView(this)
-//    analyticsComponent.logAction("logAction", "onResume")
-//    analyticsComponent.logScreen("LoginActivity")
-//    networkComponent.restartLoading(false)
+    analyticsComponent.logAction("logAction", "onResume")
+    analyticsComponent.logScreen("LoginActivity")
+    networkComponent.restartLoading(false)
   }
 
   override fun onDestroy() {
     super.onDestroy()
-//    networkComponent.detachNetworkListener(this)
+    networkComponent.detachNetworkListener(this)
     mainPresenter.dropView()
   }
 
@@ -88,40 +104,33 @@ class MainActivity : BaseActivity(), MainContract.View {
   private var fakeCAQI = -1.0
 
   override fun onCreate(savedInstanceState: Bundle?) {
-//    AndroidInjection.inject(this)
     super.onCreate(savedInstanceState)
 
+    exampleClass.takeInt()
 
-//    loggingManager.initialize()
-//    networkComponent.initialize()
-//    analyticsComponent.initialize()
-//    apiKeyProvider.initialize()
-//
-//    networkComponent.attachNetworkListener(this)
-//    Timber.d("apiKeyProvider.apiKey: ${apiKeyProvider.apiKey}")
+    networkComponent.attachNetworkListener(this)
+    Timber.d("apiKeyProvider.apiKey: ${apiKeyProvider.apiKey}")
   }
 
-//  override fun onPostCreate(savedInstanceState: Bundle?) {
-//    super.onPostCreate(savedInstanceState)
+  override fun onPostCreate(savedInstanceState: Bundle?) {
+    super.onPostCreate(savedInstanceState)
 
-//    analyticsComponent.logAction("logAction", "onCreate")
-//    setElements()
-//    setListeners()
-//  }
-//  override fun onValuesLoading() {
+    analyticsComponent.logAction("logAction", "onCreate")
+    setElements()
+    setListeners()
+  }
+  override fun onValuesLoading() {
+    Timber.d("onValuesLoading")
 //    sensorResultTable.isVisible = false
-//  }
+  }
 
-//  override fun onValuesAvailable() {
-//    setGlobalChart()
+  override fun onValuesAvailable() {
+    Timber.d("onValuesAvailable")
+    setGlobalChart()
 //    sensorResultTable.isVisible = true
-//  }
-
-
-
+  }
 
   override fun updateChart() {
-
   }
 
   override fun showChart() {
@@ -171,7 +180,6 @@ class MainActivity : BaseActivity(), MainContract.View {
   }
 
   private fun setGlobalChart() {
-    /*
     var iterator: Iterator<*> = networkComponent.getResponseMap()!!.entries.iterator()
     var maxCAQI = 0.0
     var scaledMaxCAQI = 0
@@ -195,39 +203,39 @@ class MainActivity : BaseActivity(), MainContract.View {
       val sensorName = entry.key
       val sensorValues = entry.value
       var progressToUpdate: NumberProgressBar?
-      var textViewToUpdatePm25: TextView?
-      var textViewToUpdatePm10: TextView?
+      var textViewToUpdatePm25: TextView? = null
+      var textViewToUpdatePm10: TextView? = null
 
       when (sensorName) {
         MIECHOW_SIKORSKIEGO -> {
-          progressToUpdate = sensorSikorskiegoProgress
-          textViewToUpdatePm25 = sensorSikorskiegoDetailsPm25
-          textViewToUpdatePm10 = sensorSikorskiegoDetailsPm10
+//          progressToUpdate = sensorSikorskiegoProgress
+//          textViewToUpdatePm25 = sensorSikorskiegoDetailsPm25
+//          textViewToUpdatePm10 = sensorSikorskiegoDetailsPm10
         }
         MIECHOW_RYNEK -> {
-          progressToUpdate = sensorRynekProgress
-          textViewToUpdatePm25 = sensorRynekDetailsPm25
-          textViewToUpdatePm10 = sensorRynekDetailsPm10
+//          progressToUpdate = sensorRynekProgress
+//          textViewToUpdatePm25 = sensorRynekDetailsPm25
+//          textViewToUpdatePm10 = sensorRynekDetailsPm10
         }
         MIECHOW_KOPERNIKA -> {
-          progressToUpdate = sensorKopernikaProgress
-          textViewToUpdatePm25 = sensorKopernikaDetailsPm25
-          textViewToUpdatePm10 = sensorKopernikaDetailsPm10
+//          progressToUpdate = sensorKopernikaProgress
+//          textViewToUpdatePm25 = sensorKopernikaDetailsPm25
+//          textViewToUpdatePm10 = sensorKopernikaDetailsPm10
         }
         MIECHOW_PARKOWE -> {
-          progressToUpdate = sensorParkoweProgress
-          textViewToUpdatePm25 = sensorParkoweDetailsPm25
-          textViewToUpdatePm10 = sensorParkoweDetailsPm10
+//          progressToUpdate = sensorParkoweProgress
+//          textViewToUpdatePm25 = sensorParkoweDetailsPm25
+//          textViewToUpdatePm10 = sensorParkoweDetailsPm10
         }
         MIECHOW_SZPITALNA -> {
-          progressToUpdate = sensorSzpitalnaProgress
-          textViewToUpdatePm25 = sensorSzpitalnaDetailsPm25
-          textViewToUpdatePm10 = sensorSzpitalnaDetailsPm10
+//          progressToUpdate = sensorSzpitalnaProgress
+//          textViewToUpdatePm25 = sensorSzpitalnaDetailsPm25
+//          textViewToUpdatePm10 = sensorSzpitalnaDetailsPm10
         }
         MIECHOW_KROTKA -> {
-          progressToUpdate = sensorKrotkaProgress
-          textViewToUpdatePm25 = sensorKrotkaDetailsPm25
-          textViewToUpdatePm10 = sensorKrotkaDetailsPm10
+//          progressToUpdate = sensorKrotkaProgress
+//          textViewToUpdatePm25 = sensorKrotkaDetailsPm25
+//          textViewToUpdatePm10 = sensorKrotkaDetailsPm10
         }
         else -> {
           throw Exception("Wrong sensor passed")
@@ -237,27 +245,31 @@ class MainActivity : BaseActivity(), MainContract.View {
       val CAQI = sensorValues.current?.values?.get(0)?.value?.toDouble() ?: 0.0
       val scaledCAQI = (100 * CAQI / 50).toInt()
 
-      progressToUpdate.max = maxCAQI.toInt()
-      progressToUpdate.progress = CAQI.toInt()
-      progressToUpdate.reachedBarColor = CAQI.mapToBarColor(resources)
+//      progressToUpdate.max = maxCAQI.toInt()
+//      progressToUpdate.progress = CAQI.toInt()
+//      progressToUpdate.reachedBarColor = CAQI.mapToBarColor(resources)
 
       setDetailsInfo(entry, textViewToUpdatePm25, textViewToUpdatePm10)
     }
 
-    airQualityImageView.setImageResource(avgCAQI.mapToLogoImage())
-    */
+//    airQualityImageView.setImageResource(avgCAQI.mapToLogoImage())
   }
 
-  private fun setDetailsInfo(entry: Map.Entry<SensorPlace, Measurements>, textViewToUpdatePm25: TextView,
-    textViewToUpdatePm10: TextView) {
+  private fun setDetailsInfo(entry: Map.Entry<SensorPlace, Measurements>, textViewToUpdatePm25: TextView?,
+    textViewToUpdatePm10: TextView?) {
     val patternPm25 = "%1\$s%% (pm 2.5)"
     val patternPm10 = "%1\$s%% (pm  10)"
     val pm25 = entry.value.current?.standards?.get(0)?.percent
     val pm10 = entry.value.current?.standards?.get(1)?.percent
     val infoPm25 = String.format(patternPm25, pm25?.toInt())
     val infoPm10 = String.format(patternPm10, pm10?.toInt())
-    textViewToUpdatePm25.text = infoPm25
-    textViewToUpdatePm10.text = infoPm10
+    textViewToUpdatePm25?.text = infoPm25
+    textViewToUpdatePm10?.text = infoPm10
+
+
+
+
+    Timber.d("setDetailsInfo sensorName ${entry.key}, infoPm25:$infoPm25, infoPm10:$infoPm10")
   }
 
 

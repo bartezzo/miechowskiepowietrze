@@ -6,9 +6,10 @@ import pl.tobzzo.miechowskiepowietrze.rest.retrofit.RetrofitClientInstance
 import pl.tobzzo.miechowskiepowietrze.rest.v2.Measurements
 import pl.tobzzo.miechowskiepowietrze.sensor.Sensor
 import pl.tobzzo.miechowskiepowietrze.utils.ApiKeyProvider
+import javax.inject.Inject
 import kotlin.reflect.KFunction2
 
-class MpowRetrofitProvider(private val apiKeyProvider: ApiKeyProvider) : RetrofitProvider {
+class MpowRetrofitProvider @Inject constructor(private val apiKeyProvider: ApiKeyProvider) : RetrofitProvider {
   private val getMeasurementsService: GetMeasurementsService = RetrofitClientInstance.getRetrofitInstance().create(
     GetMeasurementsService::class.java)
 
