@@ -137,7 +137,7 @@
                                 android:id="@+id/sensorSikorskiegoLegend"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
-                                android:src="@drawable/ic_timeline_black_48dp" />
+                                android:src="@drawable/diagram_155894_640" />
                         </LinearLayout>
                     </TableRow>
 
@@ -243,7 +243,7 @@
                                 android:id="@+id/sensorRynekLegend"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
-                                android:src="@drawable/ic_timeline_black_48dp" />
+                                android:src="@drawable/diagram_155894_640" />
                         </LinearLayout>
 
 
@@ -348,7 +348,7 @@
                                 android:id="@+id/sensorKopernikaLegend"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
-                                android:src="@drawable/ic_timeline_black_48dp"
+                                android:src="@drawable/diagram_155894_640"
                                 android:textColor="@color/textColor" />
                         </LinearLayout>
 
@@ -455,7 +455,7 @@
                                 android:id="@+id/sensorParkoweLegend"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
-                                android:src="@drawable/ic_timeline_black_48dp" />
+                                android:src="@drawable/diagram_155894_640" />
                         </LinearLayout>
 
 
@@ -560,7 +560,7 @@
                                 android:id="@+id/sensorSzpitalnaLegend"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
-                                android:src="@drawable/ic_timeline_black_48dp"
+                                android:src="@drawable/diagram_155894_640"
                                 android:textColor="@color/textColor" />
                         </LinearLayout>
 
@@ -666,7 +666,7 @@
                                 android:id="@+id/sensorKrotkaLegend"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
-                                android:src="@drawable/ic_timeline_black_48dp" />
+                                android:src="@drawable/diagram_155894_640" />
                         </LinearLayout>
 
 

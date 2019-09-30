@@ -27,6 +27,11 @@
         android:screenOrientation="portrait"
         android:theme="@style/TransparentStatusBarTheme" />
 
+    <activity
+        android:name=".mvp.sensor.SensorActivity"
+        android:screenOrientation="portrait"
+        android:theme="@style/TransparentStatusBarTheme" />
+
   </application>
 
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
