@@ -1,16 +1,23 @@
 package pl.tobzzo.miechowskiepowietrze.mvp.main
 
 import pl.tobzzo.miechowskiepowietrze.main.NavigationItem
+import pl.tobzzo.miechowskiepowietrze.main.NavigationItem.Favorite
+import pl.tobzzo.miechowskiepowietrze.main.NavigationItem.Main
+import pl.tobzzo.miechowskiepowietrze.main.NavigationItem.Settings
 import pl.tobzzo.miechowskiepowietrze.mvp.main.MainContract.View
 import javax.inject.Inject
 
 
 class MainPresenter @Inject
 constructor() : MainContract.Presenter {
-  private var mView: MainContract.View? = null
+  private var mView: View? = null
 
-  override fun onNavigationItemClicked(main: NavigationItem) {
-    mView?.showChart()
+  override fun onNavigationItemClicked(navigationItem: NavigationItem) {
+    when(navigationItem){
+      Main -> mView?.updateView()
+      Favorite -> mView?.showFavorite()
+      Settings -> mView?.showSettings()
+    }
   }
 
   override fun takeView(view: View) {

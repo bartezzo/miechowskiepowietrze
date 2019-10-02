@@ -42,17 +42,16 @@ class SensorActivity : BaseActivity(), SensorContract.View {
     super.onPostCreate(savedInstanceState)
   }
 
-
-  override fun updateChart() {
-
+  override fun updateView() {
+    //refresh
   }
 
-  override fun showChart() {
-
+  override fun showMain() {
+    //go to main
   }
 
-  override fun hideChart() {
-
+  override fun showSettings() {
+    //go to settings
   }
 
   override fun setListeners() {

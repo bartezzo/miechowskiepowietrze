@@ -15,7 +15,7 @@ import javax.inject.Inject
 class MpowNetworkComponent @Inject constructor(val context: Context, val retrofitProvider: RetrofitProvider, val analyticsComponent:
 AnalyticsComponent, val sensorObject: SensorObject) : NetworkComponent {
 
-  private var responseMap: LinkedHashMap<SensorPlace, Measurements>? = null
+  private var responseMap: LinkedHashMap<Sensor, Measurements>? = null
   private val listeners = mutableListOf<NetworkListener>()
   private var lastLoading: Long = 0
 
@@ -25,7 +25,7 @@ AnalyticsComponent, val sensorObject: SensorObject) : NetworkComponent {
   )/*: Single<Measurements>*/ {
 
     Timber.d("Response map remove:${sensor.place}")
-    responseMap!!.remove(sensor.place)
+    responseMap!!.remove(sensor)
 
 
     retrofitProvider.getAllMeasurements("AIRLY_CAQI", sensor, ::parseNewResult)
@@ -33,7 +33,7 @@ AnalyticsComponent, val sensorObject: SensorObject) : NetworkComponent {
 
   private fun parseNewResult(sensor: Sensor,
     response: Measurements) {
-    responseMap!![sensor.place] = response
+    responseMap!![sensor] = response
     tryToShowResult()
   }
 
@@ -55,7 +55,7 @@ AnalyticsComponent, val sensorObject: SensorObject) : NetworkComponent {
     }
   }
 
-  override fun getResponseMap(): LinkedHashMap<SensorPlace, Measurements>? = responseMap
+  override fun getResponseMap(): LinkedHashMap<Sensor, Measurements>? = responseMap
 
   override fun attachNetworkListener(listener: NetworkListener) {
     listeners.add(listener)

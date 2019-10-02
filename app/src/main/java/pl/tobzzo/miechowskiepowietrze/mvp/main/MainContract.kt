@@ -6,12 +6,12 @@ import pl.tobzzo.miechowskiepowietrze.mvp.base.BaseView
 
 interface MainContract {
   interface View : BaseView {
-    fun updateChart()
-    fun showChart()
-    fun hideChart()
+    fun updateView()
+    fun showFavorite()
+    fun showSettings()
   }
 
   interface Presenter : BasePresenter<View> {
-    fun onNavigationItemClicked(main: NavigationItem)
+    fun onNavigationItemClicked(navigationItem: NavigationItem)
   }
 }

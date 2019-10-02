@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
 
   <androidx.cardview.widget.CardView
+      android:id="@+id/card"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_margin="12dp"
+      android:layout_margin="6dp"
       app:cardCornerRadius="12dp"
       app:cardElevation="6dp"
       app:layout_columnWeight="1"
@@ -21,48 +23,73 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="16dp"
+        android:padding="6dp"
         >
 
-      <ImageView
-          android:layout_width="80dp"
-          android:layout_height="80dp"
-          android:src="@drawable/diagram_155894_640"
-          />
 
-      <TextView
-          android:id="@+id/textView1"
+      <LinearLayout
+          android:id="@+id/caqi_box"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="TextView"
-          android:textSize="18sp"
-          />
-      <TextView
-          android:id="@+id/textView2"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="TextView"
-          android:textSize="18sp"
-          />
-      <TextView
-          android:id="@+id/textView3"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="TextView"
-          android:textSize="18sp"
-          />
-      <TextView
-          android:id="@+id/textView4"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="TextView"
-          android:textSize="18sp"
-          />
+          android:layout_height="match_parent"
+          android:layout_margin="8dp"
+          android:background="@drawable/rounded_corner"
+          android:orientation="vertical"
+          >
 
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textSize="14sp"
+            android:minEms="15"
+            tools:text="name"
+            />
+
+      </LinearLayout>
+
+      <LinearLayout
+          android:id="@+id/info_box"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_margin="0dp"
+          android:orientation="vertical"
+          >
+
+
+        <TextView
+            android:id="@+id/pm2dot5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="12sp"
+            tools:text="pm2dot5"
+            />
+
+        <TextView
+            android:id="@+id/pm1dot0"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="12sp"
+
+            tools:text="pm1dot0"
+            />
+
+        <TextView
+            android:id="@+id/caqi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="12sp"
+
+            tools:text="caqi"
+            />
+      </LinearLayout>
 
     </LinearLayout>
 
   </androidx.cardview.widget.CardView>
-
 
 </LinearLayout>

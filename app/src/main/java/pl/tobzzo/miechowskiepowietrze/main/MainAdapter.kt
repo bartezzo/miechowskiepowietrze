@@ -1,28 +1,38 @@
 package pl.tobzzo.miechowskiepowietrze.main
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import pl.tobzzo.miechowskiepowietrze.R
 import pl.tobzzo.miechowskiepowietrze.rest.v2.Measurements
+import pl.tobzzo.miechowskiepowietrze.sensor.Sensor
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace
+import java.util.SortedMap
 
-class MainAdapter(private val context: Context, private val sensorResult: LinkedHashMap<SensorPlace, Measurements>?) : BaseAdapter() {
-  lateinit var keys: Array<SensorPlace>
-  lateinit var values: Array<Measurements>
+class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sensor, Measurements>?) : BaseAdapter() {
+
+  private val comparator = compareBy<Sensor> { it.name }.thenBy { it.place }.thenBy { it.gpsLatitude }.thenBy { it.gpsLongitude }
+  var data: SortedMap<Sensor, Measurements>
+  var keys: Array<Sensor>
+  var values: Array<Measurements>
 
   init {
-    sensorResult?.let {
-      keys = it.keys.toTypedArray()
-      values = it.values.toTypedArray()
-    }
+    data = sensorResult?.toSortedMap(comparator) ?: emptyMap<Sensor, Measurements>().toSortedMap(comparator)
+    keys = data.keys.toTypedArray()
+    values = data.values.toTypedArray()
   }
 
   override fun getCount(): Int {
-    return sensorResult?.size ?: 0
+    return data.size
   }
 
   override fun getItem(position: Int): Any {
@@ -41,34 +51,49 @@ class MainAdapter(private val context: Context, private val sensorResult: Linked
       listViewHolder = ViewHolder()
       convertView = (context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout
         .activity_main_sensor_item, parent, false)
-      listViewHolder.textView1 = convertView!!.findViewById<View>(R.id.textView1) as TextView
-      listViewHolder.textView2 = convertView.findViewById<View>(R.id.textView2) as TextView
-      listViewHolder.textView3 = convertView.findViewById<View>(R.id.textView3) as TextView
-      listViewHolder.textView4 = convertView.findViewById<View>(R.id.textView4) as TextView
+      listViewHolder.card = convertView.findViewById<View>(R.id.card) as CardView
+      listViewHolder.caqi_box = convertView.findViewById<View>(R.id.caqi_box)
+      listViewHolder.info = convertView.findViewById<View>(R.id.info)
+      listViewHolder.name = convertView.findViewById<View>(R.id.name) as TextView
+      listViewHolder.pm2dot5 = convertView.findViewById<View>(R.id.pm2dot5) as TextView
+      listViewHolder.pm1dot0 = convertView.findViewById<View>(R.id.pm1dot0) as TextView
+      listViewHolder.caqi = convertView.findViewById<View>(R.id.caqi) as TextView
       convertView.tag = listViewHolder
     } else {
       listViewHolder = convertView.tag as ViewHolder
     }
 
-    val patternPm25 = "%1\$s%% (pm 2.5)"
+    val item = values[position]
+    val caqi = item.current.indexes[0].value
+    val caqiColor = item.current.indexes[0].color
+    val patternPm2dot5 = "%1\$s%% (pm 2.5)"
     val patternPm10 = "%1\$s%% (pm  10)"
-    val pm25 = values[position].current.standards[0].percent
-    val pm10 = values[position].current.standards[1].percent
-    val infoPm25 = String.format(patternPm25, pm25.toInt())
+    val patternCaqi = "%1\$s%% (caqi)"
+    val pm2dot5 = item.current.standards[0].percent
+    val pm10 = item.current.standards[1].percent
+    val infoPm2dot5 = String.format(patternPm2dot5, pm2dot5.toInt())
     val infoPm10 = String.format(patternPm10, pm10.toInt())
+    val infoCaqi = String.format(patternCaqi, caqi.toInt())
+    val mDrawable = ContextCompat.getDrawable(context, R.drawable.rounded_corner)
+    mDrawable?.colorFilter = PorterDuffColorFilter(Color.parseColor(caqiColor), PorterDuff.Mode.SRC)
 
-    listViewHolder.textView1!!.text = keys[position].name
-    listViewHolder.textView2?.text = infoPm25
-    listViewHolder.textView3?.text = infoPm10
+    listViewHolder.caqi_box?.background = mDrawable
+    listViewHolder.name?.text = keys[position].name
+    listViewHolder.pm2dot5?.text = infoPm2dot5
+    listViewHolder.pm1dot0?.text = infoPm10
+    listViewHolder.caqi?.text = infoCaqi
 
-    return convertView
+    return convertView!!
   }
 
   internal class ViewHolder {
-    var textView1: TextView? = null
-    var textView2: TextView? = null
-    var textView3: TextView? = null
-    var textView4: TextView? = null
+    var card: CardView? = null
+    var caqi_box: View? = null
+    var info: View? = null
+    var name: TextView? = null
+    var pm2dot5: TextView? = null
+    var pm1dot0: TextView? = null
+    var caqi: TextView? = null
   }
 
 }

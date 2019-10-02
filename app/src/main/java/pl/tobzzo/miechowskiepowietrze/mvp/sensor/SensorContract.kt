@@ -6,12 +6,12 @@ import pl.tobzzo.miechowskiepowietrze.mvp.base.BaseView
 
 interface SensorContract {
   interface View : BaseView {
-    fun updateChart()
-    fun showChart()
-    fun hideChart()
+    fun updateView()
+    fun showMain()
+    fun showSettings()
   }
 
-  interface Presenter : BasePresenter<SensorContract.View> {
-    fun onNavigationItemClicked(main: NavigationItem)
+  interface Presenter : BasePresenter<View> {
+    fun onNavigationItemClicked(navigationItem: NavigationItem)
   }
 }
