@@ -2,13 +2,14 @@ package pl.tobzzo.miechowskiepowietrze.mvp.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.GridView
 import android.widget.TextView
-import com.daimajia.numberprogressbar.NumberProgressBar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import pl.tobzzo.miechowskiepowietrze.R
 import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
 import pl.tobzzo.miechowskiepowietrze.example.ExampleInterface
 import pl.tobzzo.miechowskiepowietrze.logging.LoggingManager
+import pl.tobzzo.miechowskiepowietrze.main.MainAdapter
 import pl.tobzzo.miechowskiepowietrze.main.NavigationItem.Favorite
 import pl.tobzzo.miechowskiepowietrze.main.NavigationItem.Main
 import pl.tobzzo.miechowskiepowietrze.main.NavigationItem.Settings
@@ -17,6 +18,7 @@ import pl.tobzzo.miechowskiepowietrze.mvp.sensor.SensorActivity
 import pl.tobzzo.miechowskiepowietrze.network.NetworkComponent
 import pl.tobzzo.miechowskiepowietrze.network.NetworkListener
 import pl.tobzzo.miechowskiepowietrze.rest.v2.Measurements
+import pl.tobzzo.miechowskiepowietrze.sensor.Sensor
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_KOPERNIKA
@@ -42,6 +44,7 @@ class MainActivity : BaseActivity(), MainContract.View, NetworkListener {
   @Inject lateinit var exampleClass: ExampleInterface
 
   private val bottomNavigation: BottomNavigationView by bindView(R.id.bottom_navigation)
+  private val mainGridView: GridView by bindView(R.id.main_grid_view)
 /*
   private val swipeLayout: SwipeRefreshLayout by bindView(id.swipe_container)
   private val sensorResultTable: TableLayout by bindView(id.sensorResultTable)
@@ -180,79 +183,121 @@ class MainActivity : BaseActivity(), MainContract.View, NetworkListener {
   }
 
   private fun setGlobalChart() {
-    var iterator: Iterator<*> = networkComponent.getResponseMap()!!.entries.iterator()
-    var maxCAQI = 0.0
-    var scaledMaxCAQI = 0
-    var sumCAQI = 0.0
-    var avgCAQI = 0.0
-    var countCAQI = 0
 
-    while (iterator.hasNext()) {
-      val entry = iterator.next() as Map.Entry<SensorPlace, Measurements>
-      val CAQI = entry.value.current?.indexes?.get(0)?.value?.toDouble() ?: 0.0
-      maxCAQI = Math.max(maxCAQI, CAQI)
-      sumCAQI += CAQI
-      countCAQI += 1
-    }
-    scaledMaxCAQI = (100 * maxCAQI / 50).toInt()
-    avgCAQI = sumCAQI / countCAQI
+    /////////
 
-    iterator = networkComponent.getResponseMap()!!.entries.iterator()
-    while (iterator.hasNext()) {
-      val entry = iterator.next() as Map.Entry<SensorPlace, Measurements>
-      val sensorName = entry.key
-      val sensorValues = entry.value
-      var progressToUpdate: NumberProgressBar?
-      var textViewToUpdatePm25: TextView? = null
-      var textViewToUpdatePm10: TextView? = null
+    val sensors = getSensors()
+    val mainAdapter = MainAdapter(this, networkComponent.getResponseMap())
+    mainGridView.adapter = mainAdapter
 
-      when (sensorName) {
-        MIECHOW_SIKORSKIEGO -> {
-//          progressToUpdate = sensorSikorskiegoProgress
-//          textViewToUpdatePm25 = sensorSikorskiegoDetailsPm25
-//          textViewToUpdatePm10 = sensorSikorskiegoDetailsPm10
-        }
-        MIECHOW_RYNEK -> {
-//          progressToUpdate = sensorRynekProgress
-//          textViewToUpdatePm25 = sensorRynekDetailsPm25
-//          textViewToUpdatePm10 = sensorRynekDetailsPm10
-        }
-        MIECHOW_KOPERNIKA -> {
-//          progressToUpdate = sensorKopernikaProgress
-//          textViewToUpdatePm25 = sensorKopernikaDetailsPm25
-//          textViewToUpdatePm10 = sensorKopernikaDetailsPm10
-        }
-        MIECHOW_PARKOWE -> {
-//          progressToUpdate = sensorParkoweProgress
-//          textViewToUpdatePm25 = sensorParkoweDetailsPm25
-//          textViewToUpdatePm10 = sensorParkoweDetailsPm10
-        }
-        MIECHOW_SZPITALNA -> {
-//          progressToUpdate = sensorSzpitalnaProgress
-//          textViewToUpdatePm25 = sensorSzpitalnaDetailsPm25
-//          textViewToUpdatePm10 = sensorSzpitalnaDetailsPm10
-        }
-        MIECHOW_KROTKA -> {
-//          progressToUpdate = sensorKrotkaProgress
-//          textViewToUpdatePm25 = sensorKrotkaDetailsPm25
-//          textViewToUpdatePm10 = sensorKrotkaDetailsPm10
-        }
-        else -> {
-          throw Exception("Wrong sensor passed")
-        }
-      }
 
-      val CAQI = sensorValues.current?.values?.get(0)?.value?.toDouble() ?: 0.0
-      val scaledCAQI = (100 * CAQI / 50).toInt()
-
-//      progressToUpdate.max = maxCAQI.toInt()
-//      progressToUpdate.progress = CAQI.toInt()
-//      progressToUpdate.reachedBarColor = CAQI.mapToBarColor(resources)
-
-      setDetailsInfo(entry, textViewToUpdatePm25, textViewToUpdatePm10)
-    }
+    ///////////
+//    var iterator: Iterator<*> = networkComponent.getResponseMap()!!.entries.iterator()
+//    var maxCAQI = 0.0
+//    var scaledMaxCAQI = 0
+//    var sumCAQI = 0.0
+//    var avgCAQI = 0.0
+//    var countCAQI = 0
+//
+//    while (iterator.hasNext()) {
+//      val entry = iterator.next() as Map.Entry<SensorPlace, Measurements>
+//      val CAQI = entry.value.current?.indexes?.get(0)?.value?.toDouble() ?: 0.0
+//      maxCAQI = Math.max(maxCAQI, CAQI)
+//      sumCAQI += CAQI
+//      countCAQI += 1
+//    }
+//    scaledMaxCAQI = (100 * maxCAQI / 50).toInt()
+//    avgCAQI = sumCAQI / countCAQI
+//
+//    iterator = networkComponent.getResponseMap()!!.entries.iterator()
+//    while (iterator.hasNext()) {
+//      val entry = iterator.next() as Map.Entry<SensorPlace, Measurements>
+//      val sensorName = entry.key
+//      val sensorValues = entry.value
+//      var progressToUpdate: NumberProgressBar?
+//      var textViewToUpdatePm25: TextView? = null
+//      var textViewToUpdatePm10: TextView? = null
+//
+//      when (sensorName) {
+//        MIECHOW_SIKORSKIEGO -> {
+////          progressToUpdate = sensorSikorskiegoProgress
+////          textViewToUpdatePm25 = sensorSikorskiegoDetailsPm25
+////          textViewToUpdatePm10 = sensorSikorskiegoDetailsPm10
+//        }
+//        MIECHOW_RYNEK -> {
+////          progressToUpdate = sensorRynekProgress
+////          textViewToUpdatePm25 = sensorRynekDetailsPm25
+////          textViewToUpdatePm10 = sensorRynekDetailsPm10
+//        }
+//        MIECHOW_KOPERNIKA -> {
+////          progressToUpdate = sensorKopernikaProgress
+////          textViewToUpdatePm25 = sensorKopernikaDetailsPm25
+////          textViewToUpdatePm10 = sensorKopernikaDetailsPm10
+//        }
+//        MIECHOW_PARKOWE -> {
+////          progressToUpdate = sensorParkoweProgress
+////          textViewToUpdatePm25 = sensorParkoweDetailsPm25
+////          textViewToUpdatePm10 = sensorParkoweDetailsPm10
+//        }
+//        MIECHOW_SZPITALNA -> {
+////          progressToUpdate = sensorSzpitalnaProgress
+////          textViewToUpdatePm25 = sensorSzpitalnaDetailsPm25
+////          textViewToUpdatePm10 = sensorSzpitalnaDetailsPm10
+//        }
+//        MIECHOW_KROTKA -> {
+////          progressToUpdate = sensorKrotkaProgress
+////          textViewToUpdatePm25 = sensorKrotkaDetailsPm25
+////          textViewToUpdatePm10 = sensorKrotkaDetailsPm10
+//        }
+//        else -> {
+//          throw Exception("Wrong sensor passed")
+//        }
+//      }
+//
+//      val CAQI = sensorValues.current?.values?.get(0)?.value?.toDouble() ?: 0.0
+//      val scaledCAQI = (100 * CAQI / 50).toInt()
+//
+////      progressToUpdate.max = maxCAQI.toInt()
+////      progressToUpdate.progress = CAQI.toInt()
+////      progressToUpdate.reachedBarColor = CAQI.mapToBarColor(resources)
+//
+//      setDetailsInfo(entry, textViewToUpdatePm25, textViewToUpdatePm10)
+//    }
 
 //    airQualityImageView.setImageResource(avgCAQI.mapToLogoImage())
+  }
+
+  private fun getSensors(): List<Sensor?> {
+    val sensors = mutableListOf<Sensor?>()
+    sensors.add(sensorObject.getSensor(MIECHOW_SIKORSKIEGO))
+    sensors.add(sensorObject.getSensor(MIECHOW_RYNEK))
+    sensors.add(sensorObject.getSensor(MIECHOW_KOPERNIKA))
+    sensors.add(sensorObject.getSensor(MIECHOW_PARKOWE))
+    sensors.add(sensorObject.getSensor(MIECHOW_SZPITALNA))
+    sensors.add(sensorObject.getSensor(MIECHOW_KROTKA))
+
+    sensors.add(sensorObject.getSensor(MIECHOW_SIKORSKIEGO))
+    sensors.add(sensorObject.getSensor(MIECHOW_RYNEK))
+    sensors.add(sensorObject.getSensor(MIECHOW_KOPERNIKA))
+    sensors.add(sensorObject.getSensor(MIECHOW_PARKOWE))
+    sensors.add(sensorObject.getSensor(MIECHOW_SZPITALNA))
+    sensors.add(sensorObject.getSensor(MIECHOW_KROTKA))
+
+    sensors.add(sensorObject.getSensor(MIECHOW_SIKORSKIEGO))
+    sensors.add(sensorObject.getSensor(MIECHOW_RYNEK))
+    sensors.add(sensorObject.getSensor(MIECHOW_KOPERNIKA))
+    sensors.add(sensorObject.getSensor(MIECHOW_PARKOWE))
+    sensors.add(sensorObject.getSensor(MIECHOW_SZPITALNA))
+    sensors.add(sensorObject.getSensor(MIECHOW_KROTKA))
+
+    sensors.add(sensorObject.getSensor(MIECHOW_SIKORSKIEGO))
+    sensors.add(sensorObject.getSensor(MIECHOW_RYNEK))
+    sensors.add(sensorObject.getSensor(MIECHOW_KOPERNIKA))
+    sensors.add(sensorObject.getSensor(MIECHOW_PARKOWE))
+    sensors.add(sensorObject.getSensor(MIECHOW_SZPITALNA))
+    sensors.add(sensorObject.getSensor(MIECHOW_KROTKA))
+
+    return sensors
   }
 
   private fun setDetailsInfo(entry: Map.Entry<SensorPlace, Measurements>, textViewToUpdatePm25: TextView?,

@@ -9,14 +9,13 @@ import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace
 import pl.tobzzo.miechowskiepowietrze.utils.TimeUtils
 import timber.log.Timber
-import java.util.HashMap
 import javax.inject.Inject
 
 
 class MpowNetworkComponent @Inject constructor(val context: Context, val retrofitProvider: RetrofitProvider, val analyticsComponent:
 AnalyticsComponent, val sensorObject: SensorObject) : NetworkComponent {
 
-  private var responseMap: MutableMap<SensorPlace, Measurements>? = null
+  private var responseMap: LinkedHashMap<SensorPlace, Measurements>? = null
   private val listeners = mutableListOf<NetworkListener>()
   private var lastLoading: Long = 0
 
@@ -48,7 +47,7 @@ AnalyticsComponent, val sensorObject: SensorObject) : NetworkComponent {
       showResult()
     } else {
       lastLoading = System.currentTimeMillis()
-      responseMap = HashMap()
+      responseMap = LinkedHashMap()
       listSensorsMeasurements()
       listeners.forEach {
         it.onValuesLoading()
@@ -56,7 +55,7 @@ AnalyticsComponent, val sensorObject: SensorObject) : NetworkComponent {
     }
   }
 
-  override fun getResponseMap(): MutableMap<SensorPlace, Measurements>? = responseMap
+  override fun getResponseMap(): LinkedHashMap<SensorPlace, Measurements>? = responseMap
 
   override fun attachNetworkListener(listener: NetworkListener) {
     listeners.add(listener)
