@@ -3,6 +3,8 @@ package pl.tobzzo.miechowskiepowietrze.mvp.main
 import android.content.Intent
 import android.os.Bundle
 import android.widget.GridView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import pl.tobzzo.miechowskiepowietrze.R
 import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
@@ -23,7 +25,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class MainActivity : BaseActivity(), MainContract.View, NetworkListener {
+class MainActivity : BaseActivity(), MainContract.View, NetworkListener, OnRefreshListener {
 
   @Inject lateinit var sensorObject: SensorObject
   @Inject lateinit var loggingManager: LoggingManager
@@ -33,6 +35,7 @@ class MainActivity : BaseActivity(), MainContract.View, NetworkListener {
   @Inject lateinit var mainPresenter: MainPresenter
   @Inject lateinit var exampleClass: ExampleInterface
 
+  private val swipeLayout: SwipeRefreshLayout by bindView(R.id.swipe_layout)
   private val bottomNavigation: BottomNavigationView by bindView(R.id.bottom_navigation)
   private val mainGridView: GridView by bindView(R.id.main_grid_view)
 
@@ -107,13 +110,11 @@ class MainActivity : BaseActivity(), MainContract.View, NetworkListener {
   }
 
   override fun setListeners() {
-    /*
-    airQualityImageView.setOnClickListener {
-      analyticsComponent.logAction("logAction", "airQualityImageView")
-      fakeCAQI = (fakeCAQI + 25) % 168 - 1
-      airQualityImageView.setImageResource(fakeCAQI.mapToLogoImage())
-    }
-    */
+    swipeLayout.setOnRefreshListener(this)
+    swipeLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+      android.R.color.holo_green_light,
+      android.R.color.holo_orange_light,
+      android.R.color.holo_red_light)
 
     bottomNavigation.setOnNavigationItemSelectedListener { item ->
       when (item.itemId) {
@@ -134,7 +135,6 @@ class MainActivity : BaseActivity(), MainContract.View, NetworkListener {
   }
 
   private fun setGlobalChart() {
-
     val mainAdapter = MainAdapter(this, networkComponent.getResponseMap())
     mainGridView.adapter = mainAdapter
 
@@ -215,11 +215,9 @@ class MainActivity : BaseActivity(), MainContract.View, NetworkListener {
 //    airQualityImageView.setImageResource(avgCAQI.mapToLogoImage())
   }
 
-
-
-//  override fun onRefresh() {
-//    analyticsComponent.logAction("logAction", "onRefresh")
-//    networkComponent.restartLoading(true)
-//    swipeLayout.isRefreshing = false
-//  }
+  override fun onRefresh() {
+    analyticsComponent.logAction("logAction", "onRefresh")
+    networkComponent.restartLoading(true)
+    swipeLayout.isRefreshing = false
+  }
 }
