@@ -6,8 +6,10 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -16,6 +18,7 @@ import pl.tobzzo.miechowskiepowietrze.R
 import pl.tobzzo.miechowskiepowietrze.rest.v2.Measurements
 import pl.tobzzo.miechowskiepowietrze.sensor.Sensor
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace
+import pl.tobzzo.miechowskiepowietrze.utils.extensions.changeVisibility
 import java.util.SortedMap
 
 class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sensor, Measurements>?) : BaseAdapter() {
@@ -59,6 +62,8 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
 //      listViewHolder.pm2dot5 = convertView.findViewById<View>(R.id.pm2dot5) as TextView
 //      listViewHolder.pm1dot0 = convertView.findViewById<View>(R.id.pm1dot0) as TextView
       listViewHolder.caqi = convertView.findViewById<View>(R.id.caqi) as TextView
+      listViewHolder.detailsButton = convertView.findViewById<View>(R.id.details_button) as Button
+      listViewHolder.detailsBox = convertView.findViewById<View>(R.id.details_box) as View
       convertView.tag = listViewHolder
     } else {
       listViewHolder = convertView.tag as ViewHolder
@@ -83,6 +88,7 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
     listViewHolder.pm2dot5?.text = infoPm2dot5
     listViewHolder.pm1dot0?.text = infoPm10
     listViewHolder.caqi?.text = infoCaqi
+    listViewHolder.detailsButton?.setOnClickListener(OnClickListener { listViewHolder.detailsBox?.changeVisibility() })
 
     return convertView!!
   }
@@ -96,6 +102,8 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
     var pm2dot5: TextView? = null
     var pm1dot0: TextView? = null
     var caqi: TextView? = null
+    var detailsButton: Button? = null
+    var detailsBox: View? = null
   }
 
 }
