@@ -5,7 +5,8 @@ import pl.tobzzo.miechowskiepowietrze.R
 import pl.tobzzo.miechowskiepowietrze.mvp.base.BaseActivity
 import pl.tobzzo.miechowskiepowietrze.mvp.main.MainActivity
 
-const val DELAY_TIME = 2000L
+//const val DELAY_TIME = 2000L
+const val DELAY_TIME = 200L
 class SplashActivity : BaseActivity() {
   override fun setListeners() = Unit
 

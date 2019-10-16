@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">Miechowskie powietrze</string>
+  <string name="app_name">Miechowskie powietrze</string>
+  <string name="main_title">@string/app_name</string>
+  <string name="main_subtitle">Dane z czujników Airly</string>
   <string name="main">Główna</string>
   <string name="favorite">Ulubione</string>
   <string name="settings">Ustawienia</string>

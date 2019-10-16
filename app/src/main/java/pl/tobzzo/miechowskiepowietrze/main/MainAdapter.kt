@@ -52,11 +52,12 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
       convertView = (context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout
         .activity_main_sensor_item, parent, false)
       listViewHolder.card = convertView.findViewById<View>(R.id.card) as CardView
-      listViewHolder.caqi_box = convertView.findViewById<View>(R.id.caqi_box)
-      listViewHolder.info = convertView.findViewById<View>(R.id.info)
+      listViewHolder.mainContainer = convertView.findViewById<View>(R.id.main_container)
+      listViewHolder.contentContainer = convertView.findViewById<View>(R.id.content_container)
+//      listViewHolder.info = convertView.findViewById<View>(R.id.info)
       listViewHolder.name = convertView.findViewById<View>(R.id.name) as TextView
-      listViewHolder.pm2dot5 = convertView.findViewById<View>(R.id.pm2dot5) as TextView
-      listViewHolder.pm1dot0 = convertView.findViewById<View>(R.id.pm1dot0) as TextView
+//      listViewHolder.pm2dot5 = convertView.findViewById<View>(R.id.pm2dot5) as TextView
+//      listViewHolder.pm1dot0 = convertView.findViewById<View>(R.id.pm1dot0) as TextView
       listViewHolder.caqi = convertView.findViewById<View>(R.id.caqi) as TextView
       convertView.tag = listViewHolder
     } else {
@@ -77,7 +78,7 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
     val mDrawable = ContextCompat.getDrawable(context, R.drawable.rounded_corner)
     mDrawable?.colorFilter = PorterDuffColorFilter(Color.parseColor(caqiColor), PorterDuff.Mode.SRC)
 
-    listViewHolder.caqi_box?.background = mDrawable
+    listViewHolder.contentContainer?.background = mDrawable
     listViewHolder.name?.text = keys[position].name
     listViewHolder.pm2dot5?.text = infoPm2dot5
     listViewHolder.pm1dot0?.text = infoPm10
@@ -88,7 +89,8 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
 
   internal class ViewHolder {
     var card: CardView? = null
-    var caqi_box: View? = null
+    var mainContainer: View? = null
+    var contentContainer: View? = null
     var info: View? = null
     var name: TextView? = null
     var pm2dot5: TextView? = null
