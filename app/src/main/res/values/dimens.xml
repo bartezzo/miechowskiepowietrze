@@ -12,4 +12,5 @@
     <dimen name="size_medium">4dp</dimen>
     <dimen name="size_large">8dp</dimen>
     <dimen name="size_xlarge">16dp</dimen>
+    <dimen name="progress_size">50dp</dimen>
 </resources>
