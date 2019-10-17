@@ -13,6 +13,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import org.w3c.dom.Text
 import pl.tobzzo.miechowskiepowietrze.R
 import pl.tobzzo.miechowskiepowietrze.rest.v2.Measurements
 import pl.tobzzo.miechowskiepowietrze.sensor.Sensor
@@ -58,7 +59,9 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
       listViewHolder.mainContainer = convertView.findViewById<View>(R.id.main_container)
       listViewHolder.contentContainer = convertView.findViewById<View>(R.id.content_container)
       listViewHolder.name = convertView.findViewById<View>(R.id.name) as TextView
-      listViewHolder.pm1dot0progressBar = convertView.findViewById<View>(R.id.pm1dot0progressBar) as ProgressBar
+      listViewHolder.pm10 = convertView.findViewById<View>(R.id.pm10) as TextView
+      listViewHolder.pm10progressBar = convertView.findViewById<View>(R.id.pm10progressBar) as ProgressBar
+      listViewHolder.pm2dot5 = convertView.findViewById<View>(R.id.pm2dot5) as TextView
       listViewHolder.pm2dot5progressBar = convertView.findViewById<View>(R.id.pm2dot5progressBar) as ProgressBar
       listViewHolder.caqi = convertView.findViewById<View>(R.id.caqi) as TextView
       listViewHolder.detailsButton = convertView.findViewById<View>(R.id.details_button) as Button
@@ -68,8 +71,8 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
       listViewHolder = convertView.tag as ViewHolder
     }
 
-    val maxPm2dot5 = values.maxBy { it.current.standards[0].percent.toInt() }
-    val maxPm1dot0 = values.maxBy { it.current.standards[1].percent.toInt() }
+    val maxPm2dot5 = (values.maxBy { it.current.standards[0].percent.toInt() })?.current?.standards?.get(0)?.percent?.toInt() ?: 0
+    val maxPm1dot0 = (values.maxBy { it.current.standards[1].percent.toInt() })?.current?.standards?.get(1)?.percent?.toInt() ?: 0
 
     val item = values[position]
     val caqi = item.current.indexes[0].value
@@ -83,10 +86,12 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
 
     listViewHolder.contentContainer?.background = mDrawable
     listViewHolder.name?.text = keys[position].name
-    listViewHolder.pm1dot0progressBar?.progress = pm10
-    listViewHolder.pm1dot0progressBar?.max = max(DEFAULT_MAX_PERCENT, maxPm1dot0?.current?.standards?.get(1)?.percent?.toInt() ?: 0)
+    listViewHolder.pm10?.text = pm10.toString()
+    listViewHolder.pm10progressBar?.progress = pm10
+    listViewHolder.pm10progressBar?.max = max(DEFAULT_MAX_PERCENT, maxPm1dot0)
+    listViewHolder.pm2dot5?.text = pm2dot5.toString()
     listViewHolder.pm2dot5progressBar?.progress = pm2dot5
-    listViewHolder.pm2dot5progressBar?.max = max(DEFAULT_MAX_PERCENT, maxPm2dot5?.current?.standards?.get(0)?.percent?.toInt() ?: 0)
+    listViewHolder.pm2dot5progressBar?.max = max(DEFAULT_MAX_PERCENT, maxPm2dot5)
     listViewHolder.caqi?.text = infoCaqi
     listViewHolder.detailsButton?.setOnClickListener { listViewHolder.detailsBox?.changeVisibility() }
 
@@ -99,7 +104,9 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
     var contentContainer: View? = null
     var info: View? = null
     var name: TextView? = null
-    var pm1dot0progressBar: ProgressBar? = null
+    var pm10: TextView? = null
+    var pm10progressBar: ProgressBar? = null
+    var pm2dot5: TextView? = null
     var pm2dot5progressBar: ProgressBar? = null
     var caqi: TextView? = null
     var detailsButton: Button? = null

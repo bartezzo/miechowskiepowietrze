@@ -129,19 +129,32 @@
           />
 
       <TextView
-          android:id="@+id/pm1dot0"
+          android:id="@+id/pm10label"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_margin="@dimen/size_small"
-          android:text="pm1.0"
+          android:text="PM 10"
           android:textAppearance="@style/TextAppearance.AppCompat.Body1"
           android:textColor="#B3FFFFFF"
           app:layout_constraintRight_toRightOf="parent"
           app:layout_constraintTop_toTopOf="parent"
           />
 
+
+      <TextView
+          android:id="@+id/pm10"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_margin="@dimen/size_small"
+          android:text="22%"
+          android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+          android:textColor="#B3FFFFFF"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/pm10label"
+          />
+
       <ProgressBar
-          android:id="@+id/pm1dot0progressBar"
+          android:id="@+id/pm10progressBar"
           style="@android:style/Widget.ProgressBar.Horizontal"
           android:layout_width="10dp"
           android:layout_height="@dimen/progress_size"
@@ -151,20 +164,32 @@
           android:progress="10"
           android:progressDrawable="@drawable/progress_drawable_vertical"
           app:layout_constraintRight_toRightOf="parent"
-          app:layout_constraintTop_toBottomOf="@id/pm1dot0"
+          app:layout_constraintTop_toBottomOf="@id/pm10"
           />
 
+
+      <TextView
+          android:id="@+id/pm2dot5label"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_margin="@dimen/size_small"
+          android:text="PM2.5"
+          android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+          android:textColor="#B3FFFFFF"
+          app:layout_constraintLeft_toRightOf="@id/media_image"
+          app:layout_constraintTop_toTopOf="parent"
+          />
 
       <TextView
           android:id="@+id/pm2dot5"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_margin="@dimen/size_small"
-          android:text="pm2.5"
+          android:text="30%"
           android:textAppearance="@style/TextAppearance.AppCompat.Body1"
           android:textColor="#B3FFFFFF"
           app:layout_constraintLeft_toRightOf="@id/media_image"
-          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/pm2dot5label"
           />
 
 
