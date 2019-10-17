@@ -32,10 +32,6 @@
           android:id="@+id/media_image"
           android:layout_width="0dp"
           android:layout_height="0dp"
-          android:layout_marginStart="@dimen/item_margin_left"
-          android:layout_marginLeft="@dimen/item_margin_left"
-          android:layout_marginEnd="@dimen/item_margin_right"
-          android:layout_marginRight="@dimen/item_margin_right"
           android:scaleType="centerCrop"
           android:src="@drawable/market"
           app:layout_constraintDimensionRatio="H,1:1"
@@ -46,27 +42,13 @@
           tools:src="@drawable/icon_main"
           />
 
-      <View
-          android:layout_width="0dp"
-          android:layout_height="0dp"
-          android:layout_marginStart="@dimen/item_margin_left"
-          android:layout_marginLeft="@dimen/item_margin_left"
-          android:layout_marginEnd="@dimen/item_margin_right"
-          android:layout_marginRight="@dimen/item_margin_right"
-          android:background="#dd000000"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="@+id/top_space"
-          />
 
-      <Space
-          android:id="@+id/top_space"
+      <androidx.constraintlayout.widget.Guideline
+          android:id="@+id/guidelineHorizontal66"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          app:layout_constraintBottom_toTopOf="@+id/name"
-          app:layout_constraintStart_toStartOf="parent"
-          />
+          android:orientation="horizontal"
+          app:layout_constraintGuide_percent="0.66" />
 
       <TextView
           android:id="@+id/name"
@@ -111,22 +93,15 @@
           app:layout_constraintStart_toStartOf="parent"
           />
 
-      <View
-          android:layout_width="@dimen/item_margin_right"
-          android:layout_height="0dp"
-          android:background="#dd000000"
-          app:layout_constraintBottom_toTopOf="@id/right_space"
-          app:layout_constraintRight_toRightOf="parent"
-          app:layout_constraintTop_toTopOf="parent"
-          />
 
-      <Space
-          android:id="@+id/right_space"
+
+
+      <androidx.constraintlayout.widget.Guideline
+          android:id="@+id/guidelineVertical66"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          app:layout_constraintBottom_toBottomOf="@+id/pm2dot5progressBar"
-          app:layout_constraintStart_toStartOf="parent"
-          />
+          android:orientation="horizontal"
+          app:layout_constraintGuide_percent="0.66" />
 
       <TextView
           android:id="@+id/pm10label"
@@ -137,7 +112,7 @@
           android:textAppearance="@style/TextAppearance.AppCompat.Body1"
           android:textColor="#B3FFFFFF"
           app:layout_constraintRight_toRightOf="parent"
-          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintBottom_toTopOf="@+id/pm10"
           />
 
 
@@ -150,7 +125,7 @@
           android:textAppearance="@style/TextAppearance.AppCompat.Body1"
           android:textColor="#B3FFFFFF"
           app:layout_constraintRight_toRightOf="parent"
-          app:layout_constraintTop_toBottomOf="@id/pm10label"
+          app:layout_constraintBottom_toTopOf="@id/pm10progressBar"
           />
 
       <ProgressBar
@@ -164,7 +139,7 @@
           android:progress="10"
           android:progressDrawable="@drawable/progress_drawable_vertical"
           app:layout_constraintRight_toRightOf="parent"
-          app:layout_constraintTop_toBottomOf="@id/pm10"
+          app:layout_constraintBottom_toTopOf="@id/guidelineVertical66"
           />
 
 
@@ -177,7 +152,7 @@
           android:textAppearance="@style/TextAppearance.AppCompat.Body1"
           android:textColor="#B3FFFFFF"
           app:layout_constraintLeft_toRightOf="@id/media_image"
-          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintBottom_toTopOf="@id/pm2dot5"
           />
 
       <TextView
@@ -189,7 +164,7 @@
           android:textAppearance="@style/TextAppearance.AppCompat.Body1"
           android:textColor="#B3FFFFFF"
           app:layout_constraintLeft_toRightOf="@id/media_image"
-          app:layout_constraintTop_toBottomOf="@id/pm2dot5label"
+          app:layout_constraintBottom_toTopOf="@id/pm2dot5progressBar"
           />
 
 
@@ -204,7 +179,7 @@
           android:progress="90"
           android:progressDrawable="@drawable/progress_drawable_vertical"
           app:layout_constraintLeft_toRightOf="@id/media_image"
-          app:layout_constraintTop_toBottomOf="@id/pm2dot5"
+          app:layout_constraintBottom_toTopOf="@id/guidelineVertical66"
           />
 
 
