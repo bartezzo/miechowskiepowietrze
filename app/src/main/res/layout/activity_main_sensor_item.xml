@@ -29,6 +29,14 @@
         >
 
       <androidx.constraintlayout.widget.Guideline
+          android:id="@+id/guidelineHorizontal33"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal"
+          app:layout_constraintGuide_percent="0.33"
+          />
+
+      <androidx.constraintlayout.widget.Guideline
           android:id="@+id/guidelineHorizontal66"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -50,13 +58,12 @@
           android:layout_height="0dp"
           android:scaleType="centerCrop"
           android:src="@drawable/market"
-          app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintDimensionRatio="H,1:1"
           app:layout_constraintLeft_toLeftOf="parent"
           app:layout_constraintRight_toRightOf="@id/guidelineVertical66"
           app:layout_constraintTop_toTopOf="parent"
           tools:background="#cc000000"
-          tools:src="@drawable/market"
+          tools:src="@drawable/common_google_signin_btn_icon_dark"
           />
 
       <View
@@ -124,27 +131,36 @@
           app:layout_constraintTop_toTopOf="parent"
           />
 
-      <TextView
-          android:id="@+id/pm10label"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_margin="@dimen/size_small"
-          android:text="PM 10"
-          android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-          android:textColor="#B3FFFFFF"
-          app:layout_constraintBottom_toTopOf="@+id/pm10"
-          app:layout_constraintRight_toRightOf="parent"
+
+
+
+      <ProgressBar
+          android:id="@+id/pm2dot5progressBar"
+          style="@android:style/Widget.ProgressBar.Horizontal"
+          android:layout_width="10dp"
+          android:layout_height="0dp"
+          android:layout_gravity="center"
+          android:layout_margin="@dimen/size_large"
+          android:max="100"
+          android:progress="90"
+          android:progressDrawable="@drawable/progress_drawable_vertical"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintLeft_toRightOf="@id/guidelineVertical66"
+          app:layout_constraintBottom_toTopOf="@+id/guidelineHorizontal33"
           />
 
       <TextView
-          android:id="@+id/pm10"
+          android:id="@+id/pm2dot5"
           android:layout_width="0dp"
-          android:layout_height="wrap_content"
+          android:layout_height="0dp"
           android:layout_margin="@dimen/size_small"
-          android:text="22%"
+          android:text="30%"
           android:textAppearance="@style/TextAppearance.AppCompat.Body1"
           android:textColor="#B3FFFFFF"
-          app:layout_constraintBottom_toTopOf="@id/pm10progressBar"
+          android:gravity="center"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintLeft_toRightOf="@id/pm2dot5progressBar"
+          app:layout_constraintBottom_toTopOf="@+id/guidelineHorizontal33"
           app:layout_constraintRight_toRightOf="parent"
           />
 
@@ -152,52 +168,30 @@
           android:id="@+id/pm10progressBar"
           style="@android:style/Widget.ProgressBar.Horizontal"
           android:layout_width="10dp"
-          android:layout_height="@dimen/progress_size"
+          android:layout_height="0dp"
           android:layout_gravity="center"
           android:layout_margin="@dimen/size_large"
           android:max="100"
           android:progress="10"
           android:progressDrawable="@drawable/progress_drawable_vertical"
+          app:layout_constraintTop_toTopOf="@id/guidelineHorizontal33"
+          app:layout_constraintLeft_toRightOf="@id/guidelineVertical66"
           app:layout_constraintBottom_toTopOf="@id/guidelineHorizontal66"
-          app:layout_constraintRight_toRightOf="parent"
           />
 
       <TextView
-          android:id="@+id/pm2dot5label"
+          android:id="@+id/pm10"
           android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_margin="@dimen/size_small"
-          android:text="PM2.5"
-          android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-          android:textColor="#B3FFFFFF"
-          app:layout_constraintBottom_toTopOf="@id/pm2dot5"
-          app:layout_constraintLeft_toRightOf="@id/media_image"
-          />
-
-      <TextView
-          android:id="@+id/pm2dot5"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
+          android:layout_height="0dp"
           android:layout_margin="@dimen/size_small"
           android:text="30%"
           android:textAppearance="@style/TextAppearance.AppCompat.Body1"
           android:textColor="#B3FFFFFF"
-          app:layout_constraintBottom_toTopOf="@id/pm2dot5progressBar"
-          app:layout_constraintLeft_toRightOf="@id/media_image"
-          />
-
-      <ProgressBar
-          android:id="@+id/pm2dot5progressBar"
-          style="@android:style/Widget.ProgressBar.Horizontal"
-          android:layout_width="10dp"
-          android:layout_height="@dimen/progress_size"
-          android:layout_gravity="center"
-          android:layout_margin="@dimen/size_large"
-          android:max="100"
-          android:progress="90"
-          android:progressDrawable="@drawable/progress_drawable_vertical"
-          app:layout_constraintBottom_toTopOf="@id/guidelineHorizontal66"
-          app:layout_constraintLeft_toRightOf="@id/media_image"
+          android:gravity="center"
+          app:layout_constraintTop_toTopOf="@id/guidelineHorizontal33"
+          app:layout_constraintLeft_toRightOf="@id/pm10progressBar"
+          app:layout_constraintBottom_toTopOf="@+id/guidelineHorizontal66"
+          app:layout_constraintRight_toRightOf="parent"
           />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -211,5 +205,6 @@
       android:orientation="vertical"
       android:visibility="gone"
       />
+
 
 </LinearLayout>
