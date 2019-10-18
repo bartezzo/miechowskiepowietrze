@@ -28,27 +28,47 @@
         android:background="#bb00ff00"
         >
 
+      <androidx.constraintlayout.widget.Guideline
+          android:id="@+id/guidelineHorizontal66"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal"
+          app:layout_constraintGuide_percent="0.66"
+          />
+
+      <androidx.constraintlayout.widget.Guideline
+          android:id="@+id/guidelineVertical66"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          app:layout_constraintGuide_percent="0.66"
+          />
+
       <ImageView
           android:id="@+id/media_image"
           android:layout_width="0dp"
           android:layout_height="0dp"
           android:scaleType="centerCrop"
           android:src="@drawable/market"
+          app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintDimensionRatio="H,1:1"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toRightOf="@id/guidelineVertical66"
           app:layout_constraintTop_toTopOf="parent"
           tools:background="#cc000000"
-          tools:src="@drawable/icon_main"
+          tools:src="@drawable/market"
           />
 
-
-      <androidx.constraintlayout.widget.Guideline
-          android:id="@+id/guidelineHorizontal66"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:orientation="horizontal"
-          app:layout_constraintGuide_percent="0.66" />
+      <View
+          android:id="@+id/space_bottom_left"
+          android:layout_width="0dp"
+          android:layout_height="0dp"
+          android:background="#dd000000"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toRightOf="@id/guidelineVertical66"
+          app:layout_constraintTop_toTopOf="@id/guidelineHorizontal66"
+          />
 
       <TextView
           android:id="@+id/name"
@@ -93,15 +113,16 @@
           app:layout_constraintStart_toStartOf="parent"
           />
 
-
-
-
-      <androidx.constraintlayout.widget.Guideline
-          android:id="@+id/guidelineVertical66"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:orientation="horizontal"
-          app:layout_constraintGuide_percent="0.66" />
+      <View
+          android:id="@+id/space_top_right"
+          android:layout_width="0dp"
+          android:layout_height="0dp"
+          android:background="#dd000000"
+          app:layout_constraintBottom_toBottomOf="@id/guidelineHorizontal66"
+          app:layout_constraintLeft_toLeftOf="@id/guidelineVertical66"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          />
 
       <TextView
           android:id="@+id/pm10label"
@@ -111,10 +132,9 @@
           android:text="PM 10"
           android:textAppearance="@style/TextAppearance.AppCompat.Body1"
           android:textColor="#B3FFFFFF"
-          app:layout_constraintRight_toRightOf="parent"
           app:layout_constraintBottom_toTopOf="@+id/pm10"
+          app:layout_constraintRight_toRightOf="parent"
           />
-
 
       <TextView
           android:id="@+id/pm10"
@@ -124,8 +144,8 @@
           android:text="22%"
           android:textAppearance="@style/TextAppearance.AppCompat.Body1"
           android:textColor="#B3FFFFFF"
-          app:layout_constraintRight_toRightOf="parent"
           app:layout_constraintBottom_toTopOf="@id/pm10progressBar"
+          app:layout_constraintRight_toRightOf="parent"
           />
 
       <ProgressBar
@@ -138,10 +158,9 @@
           android:max="100"
           android:progress="10"
           android:progressDrawable="@drawable/progress_drawable_vertical"
+          app:layout_constraintBottom_toTopOf="@id/guidelineHorizontal66"
           app:layout_constraintRight_toRightOf="parent"
-          app:layout_constraintBottom_toTopOf="@id/guidelineVertical66"
           />
-
 
       <TextView
           android:id="@+id/pm2dot5label"
@@ -151,8 +170,8 @@
           android:text="PM2.5"
           android:textAppearance="@style/TextAppearance.AppCompat.Body1"
           android:textColor="#B3FFFFFF"
-          app:layout_constraintLeft_toRightOf="@id/media_image"
           app:layout_constraintBottom_toTopOf="@id/pm2dot5"
+          app:layout_constraintLeft_toRightOf="@id/media_image"
           />
 
       <TextView
@@ -163,10 +182,9 @@
           android:text="30%"
           android:textAppearance="@style/TextAppearance.AppCompat.Body1"
           android:textColor="#B3FFFFFF"
-          app:layout_constraintLeft_toRightOf="@id/media_image"
           app:layout_constraintBottom_toTopOf="@id/pm2dot5progressBar"
+          app:layout_constraintLeft_toRightOf="@id/media_image"
           />
-
 
       <ProgressBar
           android:id="@+id/pm2dot5progressBar"
@@ -178,10 +196,9 @@
           android:max="100"
           android:progress="90"
           android:progressDrawable="@drawable/progress_drawable_vertical"
+          app:layout_constraintBottom_toTopOf="@id/guidelineHorizontal66"
           app:layout_constraintLeft_toRightOf="@id/media_image"
-          app:layout_constraintBottom_toTopOf="@id/guidelineVertical66"
           />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
