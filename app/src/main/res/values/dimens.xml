@@ -1,16 +1,26 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="sensorNameTextSize">16sp</dimen>
-    <dimen name="sensorDetailsTextSize">10sp</dimen>
-    <dimen name="item_margin_right">80dp</dimen>
-    <dimen name="item_margin_left">0dp</dimen>
-    <dimen name="item_margin_top">0dp</dimen>
-    <dimen name="item_margin_bottom">0dp</dimen>
-    <dimen name="size_small">2dp</dimen>
-    <dimen name="size_medium">4dp</dimen>
-    <dimen name="size_large">8dp</dimen>
-    <dimen name="size_xlarge">16dp</dimen>
-    <dimen name="progress_size">50dp</dimen>
+  <!-- Default screen margins, per the Android Design guidelines. -->
+  <dimen name="activity_horizontal_margin">16dp</dimen>
+  <dimen name="activity_vertical_margin">16dp</dimen>
+  <dimen name="sensorNameTextSize">16sp</dimen>
+  <dimen name="sensorDetailsTextSize">10sp</dimen>
+  <dimen name="item_margin_right">80dp</dimen>
+  <dimen name="item_margin_left">0dp</dimen>
+  <dimen name="item_margin_top">0dp</dimen>
+  <dimen name="item_margin_bottom">0dp</dimen>
+  <dimen name="margin_size_small">2dp</dimen>
+  <dimen name="margin_size_medium">4dp</dimen>
+  <dimen name="margin_size_large">8dp</dimen>
+  <dimen name="margin_size_xlarge">16dp</dimen>
+  <dimen name="margin_size_xxlarge">24dp</dimen>
+  <dimen name="margin_size_xxxlarge">32dp</dimen>
+  <dimen name="progress_size">50dp</dimen>
+  <dimen name="text_size_xxsmall">6sp</dimen>
+  <dimen name="text_size_xsmall">8sp</dimen>
+  <dimen name="text_size_small">10sp</dimen>
+  <dimen name="text_size_medium">12sp</dimen>
+  <dimen name="text_size_large">14sp</dimen>
+  <dimen name="text_size_xlarge">16sp</dimen>
+  <dimen name="text_size_xxlarge">18sp</dimen>
+  <dimen name="text_size_xxxlarge">20sp</dimen>
 </resources>

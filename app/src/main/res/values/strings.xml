@@ -6,4 +6,8 @@
   <string name="favorite">Ulubione</string>
   <string name="settings">Ustawienia</string>
   <string name="hello">Witamy</string>
+  <string name="media_image_description">Media Image</string>
+  <string name="caqi">% caqi</string>
+  <string name="pm2">% PM2.5</string>
+  <string name="pm10">% PM10</string>
 </resources>

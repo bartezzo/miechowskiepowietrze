@@ -13,7 +13,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import org.w3c.dom.Text
 import pl.tobzzo.miechowskiepowietrze.R
 import pl.tobzzo.miechowskiepowietrze.rest.v2.Measurements
 import pl.tobzzo.miechowskiepowietrze.sensor.Sensor
@@ -61,8 +60,8 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
       listViewHolder.name = convertView.findViewById<View>(R.id.name) as TextView
       listViewHolder.pm10 = convertView.findViewById<View>(R.id.pm10) as TextView
       listViewHolder.pm10progressBar = convertView.findViewById<View>(R.id.pm10progressBar) as ProgressBar
-      listViewHolder.pm2dot5 = convertView.findViewById<View>(R.id.pm2dot5) as TextView
-      listViewHolder.pm2dot5progressBar = convertView.findViewById<View>(R.id.pm2dot5progressBar) as ProgressBar
+      listViewHolder.pm2dot5 = convertView.findViewById<View>(R.id.pm2) as TextView
+      listViewHolder.pm2dot5progressBar = convertView.findViewById<View>(R.id.pm2progressBar) as ProgressBar
       listViewHolder.caqi = convertView.findViewById<View>(R.id.caqi) as TextView
       listViewHolder.detailsButton = convertView.findViewById<View>(R.id.details_button) as Button
       listViewHolder.detailsBox = convertView.findViewById<View>(R.id.details_box) as View
@@ -75,12 +74,10 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
     val maxPm1dot0 = (values.maxBy { it.current.standards[1].percent.toInt() })?.current?.standards?.get(1)?.percent?.toInt() ?: 0
 
     val item = values[position]
-    val caqi = item.current.indexes[0].value
+    val caqi = item.current.indexes[0].value.toInt().toString()
     val caqiColor = item.current.indexes[0].color
-    val patternCaqi = "%1\$s%% (caqi)"
     val pm2dot5 = item.current.standards[0].percent.toInt()
     val pm10 = item.current.standards[1].percent.toInt()
-    val infoCaqi = String.format(patternCaqi, caqi.toInt())
     val mDrawable = ContextCompat.getDrawable(context, R.drawable.rounded_corner)
     mDrawable?.colorFilter = PorterDuffColorFilter(Color.parseColor(caqiColor), PorterDuff.Mode.SRC)
 
@@ -92,7 +89,7 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
     listViewHolder.pm2dot5?.text = pm2dot5.toString()
     listViewHolder.pm2dot5progressBar?.progress = pm2dot5
     listViewHolder.pm2dot5progressBar?.max = max(DEFAULT_MAX_PERCENT, maxPm2dot5)
-    listViewHolder.caqi?.text = infoCaqi
+    listViewHolder.caqi?.text = caqi
     listViewHolder.detailsButton?.setOnClickListener { listViewHolder.detailsBox?.changeVisibility() }
 
     return convertView!!
