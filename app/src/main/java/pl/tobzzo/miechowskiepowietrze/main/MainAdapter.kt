@@ -21,6 +21,7 @@ import java.util.SortedMap
 import kotlin.math.max
 
 const val DEFAULT_MAX_PERCENT = 100
+
 class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sensor, Measurements>?) : BaseAdapter() {
 
   private val comparator = compareBy<Sensor> { it.name }.thenBy { it.place }.thenBy { it.gpsLatitude }.thenBy { it.gpsLongitude }
@@ -63,8 +64,6 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
       listViewHolder.pm2dot5 = convertView.findViewById<View>(R.id.pm2) as TextView
       listViewHolder.pm2dot5progressBar = convertView.findViewById<View>(R.id.pm2progressBar) as ProgressBar
       listViewHolder.caqi = convertView.findViewById<View>(R.id.caqi) as TextView
-      listViewHolder.detailsButton = convertView.findViewById<View>(R.id.details_button) as Button
-      listViewHolder.detailsBox = convertView.findViewById<View>(R.id.details_box) as View
       convertView.tag = listViewHolder
     } else {
       listViewHolder = convertView.tag as ViewHolder
@@ -90,7 +89,6 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
     listViewHolder.pm2dot5progressBar?.progress = pm2dot5
     listViewHolder.pm2dot5progressBar?.max = max(DEFAULT_MAX_PERCENT, maxPm2dot5)
     listViewHolder.caqi?.text = caqi
-    listViewHolder.detailsButton?.setOnClickListener { listViewHolder.detailsBox?.changeVisibility() }
 
     return convertView!!
   }
@@ -106,8 +104,6 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
     var pm2dot5: TextView? = null
     var pm2dot5progressBar: ProgressBar? = null
     var caqi: TextView? = null
-    var detailsButton: Button? = null
-    var detailsBox: View? = null
   }
 
 }
