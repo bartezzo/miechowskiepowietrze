@@ -17,4 +17,11 @@
 
     <style name="TransparentStatusBarTheme" parent="AppTheme.NoActionBar"/>
 
+    <style name="ProgressBarHorizontal" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="colorButtonNormal">#f50057</item>
+        <item name="colorControlActivated">#33691e</item>
+        <item name="colorControlHighlight">#ff6d00</item>
+        <item name="android:progressDrawable">@drawable/progress_drawable_horizontal</item>
+    </style>
+
 </resources>

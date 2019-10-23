@@ -78,9 +78,10 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
     val pm2dot5 = item.current.standards[0].percent.toInt()
     val pm10 = item.current.standards[1].percent.toInt()
     val mDrawable = ContextCompat.getDrawable(context, R.drawable.rounded_corner)
-    mDrawable?.colorFilter = PorterDuffColorFilter(Color.parseColor(caqiColor), PorterDuff.Mode.SRC)
+    val parsedCaqiColor = Color.parseColor(caqiColor)
+    mDrawable?.colorFilter = PorterDuffColorFilter(parsedCaqiColor, PorterDuff.Mode.SRC)
 
-    listViewHolder.contentContainer?.background = mDrawable
+    listViewHolder.spaceBottom?.setBackgroundColor(parsedCaqiColor)
     listViewHolder.name?.text = keys[position].name
     listViewHolder.pm10?.text = pm10.toString()
     listViewHolder.pm10progressBar?.progress = pm10
@@ -104,6 +105,7 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
     var pm2dot5: TextView? = null
     var pm2dot5progressBar: ProgressBar? = null
     var caqi: TextView? = null
+    var spaceBottom: View? = null
   }
 
 }
