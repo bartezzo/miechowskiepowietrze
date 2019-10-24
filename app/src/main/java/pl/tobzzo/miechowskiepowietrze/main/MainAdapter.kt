@@ -8,17 +8,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import pl.tobzzo.miechowskiepowietrze.R
 import pl.tobzzo.miechowskiepowietrze.rest.v2.Measurements
 import pl.tobzzo.miechowskiepowietrze.sensor.Sensor
-import pl.tobzzo.miechowskiepowietrze.utils.extensions.changeVisibility
 import java.util.SortedMap
 import kotlin.math.max
+
 
 const val DEFAULT_MAX_PERCENT = 100
 
@@ -65,6 +66,8 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
       listViewHolder.pm2dot5progressBar = convertView.findViewById<View>(R.id.pm2progressBar) as ProgressBar
       listViewHolder.spaceBottom = convertView.findViewById<View>(R.id.space_bottom) as View
       listViewHolder.caqi = convertView.findViewById<View>(R.id.caqi) as TextView
+      listViewHolder.guidelineVerticalBottomSpaceProgress = convertView.findViewById<View>(R.id.guidelineVerticalBottomSpaceProgress) as
+        Guideline
       convertView.tag = listViewHolder
     } else {
       listViewHolder = convertView.tag as ViewHolder
@@ -92,6 +95,10 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
     listViewHolder.pm2dot5progressBar?.max = max(DEFAULT_MAX_PERCENT, maxPm2dot5)
     listViewHolder.caqi?.text = caqi
 
+    val params = listViewHolder.guidelineVerticalBottomSpaceProgress?.layoutParams as ConstraintLayout.LayoutParams
+    params.guidePercent = 0.95f
+    listViewHolder.guidelineVerticalBottomSpaceProgress?.layoutParams = params
+
     return convertView!!
   }
 
@@ -107,6 +114,7 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
     var pm2dot5progressBar: ProgressBar? = null
     var caqi: TextView? = null
     var spaceBottom: View? = null
+    var guidelineVerticalBottomSpaceProgress: Guideline? = null
   }
 
 }
