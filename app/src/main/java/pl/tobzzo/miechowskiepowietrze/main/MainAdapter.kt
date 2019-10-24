@@ -63,6 +63,7 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
       listViewHolder.pm10progressBar = convertView.findViewById<View>(R.id.pm10progressBar) as ProgressBar
       listViewHolder.pm2dot5 = convertView.findViewById<View>(R.id.pm2) as TextView
       listViewHolder.pm2dot5progressBar = convertView.findViewById<View>(R.id.pm2progressBar) as ProgressBar
+      listViewHolder.spaceBottom = convertView.findViewById<View>(R.id.space_bottom) as View
       listViewHolder.caqi = convertView.findViewById<View>(R.id.caqi) as TextView
       convertView.tag = listViewHolder
     } else {
