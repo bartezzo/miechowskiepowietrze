@@ -1,13 +1,23 @@
 package pl.tobzzo.miechowskiepowietrze.network
 
 import android.content.Context
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers.*
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
 import pl.tobzzo.miechowskiepowietrze.connection.RetrofitProvider
 import pl.tobzzo.miechowskiepowietrze.rest.v2.Measurements
 import pl.tobzzo.miechowskiepowietrze.sensor.Sensor
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject
-import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_KOPERNIKA
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_KROTKA
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_PARKOWE
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_RYNEK
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SIKORSKIEGO
+import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SZPITALNA
 import pl.tobzzo.miechowskiepowietrze.utils.TimeUtils
+import retrofit2.Call
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -22,19 +32,19 @@ AnalyticsComponent, val sensorObject: SensorObject) : NetworkComponent {
 
   private fun makeHttpRequest(
     sensor: Sensor
-  )/*: Single<Measurements>*/ {
+  ): Observable<Call<Measurements>>? {
 
     Timber.d("Response map remove:${sensor.place}")
     responseMap!!.remove(sensor)
 
 
-    retrofitProvider.getAllMeasurements("AIRLY_CAQI", sensor, ::parseNewResult)
+    return retrofitProvider.getAllMeasurements("AIRLY_CAQI", sensor, ::parseNewResult)
   }
 
   private fun parseNewResult(sensor: Sensor,
     response: Measurements) {
+    Timber.d("parseNewResult for sensor:${sensor.name}")
     responseMap!![sensor] = response
-    tryToShowResult()
   }
 
   override fun restartLoading(forceRefresh: Boolean) {
@@ -95,13 +105,50 @@ AnalyticsComponent, val sensorObject: SensorObject) : NetworkComponent {
   }
 
   private fun listSensorsMeasurements() {
-    val iterator = sensorObject.activeSensors.iterator()
-    while (iterator.hasNext()) {
-      val sensorPlace = iterator.next()
-      val sensor = sensorObject.getSensor(sensorPlace)
-      sensor?.let {
-        makeHttpRequest(sensor)
-      }
-    }
+//    val iterator = sensorObject.activeSensors.iterator()
+//    while (iterator.hasNext()) {
+//      val sensorPlace = iterator.next()
+//      val sensor = sensorObject.getSensor(sensorPlace)
+//      sensor?.let {
+//        makeHttpRequest(sensor)
+//      }
+//    }
+
+    val sensorSIKORSKIEGO = sensorObject.getSensor(MIECHOW_SIKORSKIEGO)
+    val sensorRYNEK = sensorObject.getSensor(MIECHOW_RYNEK)
+    val sensorKOPERNIKA = sensorObject.getSensor(MIECHOW_KOPERNIKA)
+    val sensorPARKOWE = sensorObject.getSensor(MIECHOW_PARKOWE)
+    val sensorSZPITALNA = sensorObject.getSensor(MIECHOW_SZPITALNA)
+    val sensorKROTKA = sensorObject.getSensor(MIECHOW_KROTKA)
+
+    val completable1 = makeHttpRequest(sensorSIKORSKIEGO!!)
+    val completable2 = makeHttpRequest(sensorRYNEK!!)
+    val completable3 = makeHttpRequest(sensorKOPERNIKA!!)
+    val completable4 = makeHttpRequest(sensorPARKOWE!!)
+    val completable5 = makeHttpRequest(sensorSZPITALNA!!)
+    val completable6 = makeHttpRequest(sensorKROTKA!!)
+
+    val disposable = completable1
+      ?.mergeWith(completable2)
+      ?.mergeWith(completable3)
+      ?.mergeWith(completable4)
+      ?.mergeWith(completable5)
+      ?.mergeWith(completable6)
+      ?.observeOn(mainThread())
+      ?.subscribeOn(Schedulers.io())
+      ?.subscribeBy(
+      onComplete = { onSuccess() },
+      onError = { error -> onError(error) }
+    )
+  }
+
+  private fun onError(error: Throwable) {
+    Timber.d("Completable onError:$error")
+    showResult()
+  }
+
+  private fun onSuccess() {
+    Timber.d("Completable onSuccess")
+    showResult()
   }
 }
