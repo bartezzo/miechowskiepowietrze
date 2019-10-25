@@ -62,8 +62,8 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
       listViewHolder.name = convertView.findViewById<View>(R.id.name) as TextView
       listViewHolder.pm10 = convertView.findViewById<View>(R.id.pm10) as TextView
       listViewHolder.pm10progressBar = convertView.findViewById<View>(R.id.pm10progressBar) as ProgressBar
-      listViewHolder.pm2dot5 = convertView.findViewById<View>(R.id.pm2) as TextView
-      listViewHolder.pm2dot5progressBar = convertView.findViewById<View>(R.id.pm2progressBar) as ProgressBar
+      listViewHolder.pm2 = convertView.findViewById<View>(R.id.pm2) as TextView
+      listViewHolder.pm2progressBar = convertView.findViewById<View>(R.id.pm2progressBar) as ProgressBar
       listViewHolder.spaceBottom = convertView.findViewById<View>(R.id.space_bottom) as View
       listViewHolder.caqi = convertView.findViewById<View>(R.id.caqi) as TextView
       listViewHolder.guidelineVerticalBottomSpaceProgress = convertView.findViewById<View>(R.id.guidelineVerticalBottomSpaceProgress) as
@@ -73,13 +73,15 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
       listViewHolder = convertView.tag as ViewHolder
     }
 
-    val maxPm2dot5 = (values.maxBy { it.current.standards[0].percent.toInt() })?.current?.standards?.get(0)?.percent?.toInt() ?: 0
-    val maxPm1dot0 = (values.maxBy { it.current.standards[1].percent.toInt() })?.current?.standards?.get(1)?.percent?.toInt() ?: 0
+    val maxPm2 = (values.maxBy { it.current.standards[0].percent.toInt() })?.current?.standards?.get(0)?.percent?.toInt() ?: 0
+    val maxPm10 = (values.maxBy { it.current.standards[1].percent.toInt() })?.current?.standards?.get(1)?.percent?.toInt() ?: 0
+    val scaledMaxPm2 = max(DEFAULT_MAX_PERCENT, maxPm2)
+    val scaledMaxPm10 = max(DEFAULT_MAX_PERCENT, maxPm10)
 
     val item = values[position]
     val caqi = item.current.indexes[0].value.toInt().toString()
     val caqiColor = item.current.indexes[0].color
-    val pm2dot5 = item.current.standards[0].percent.toInt()
+    val pm2 = item.current.standards[0].percent.toInt()
     val pm10 = item.current.standards[1].percent.toInt()
     val mDrawable = ContextCompat.getDrawable(context, R.drawable.rounded_corner)
     val parsedCaqiColor = Color.parseColor(caqiColor)
@@ -89,14 +91,14 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
     listViewHolder.name?.text = keys[position].name
     listViewHolder.pm10?.text = pm10.toString()
     listViewHolder.pm10progressBar?.progress = pm10
-    listViewHolder.pm10progressBar?.max = max(DEFAULT_MAX_PERCENT, maxPm1dot0)
-    listViewHolder.pm2dot5?.text = pm2dot5.toString()
-    listViewHolder.pm2dot5progressBar?.progress = pm2dot5
-    listViewHolder.pm2dot5progressBar?.max = max(DEFAULT_MAX_PERCENT, maxPm2dot5)
+    listViewHolder.pm10progressBar?.max = scaledMaxPm10
+    listViewHolder.pm2?.text = pm2.toString()
+    listViewHolder.pm2progressBar?.progress = pm2
+    listViewHolder.pm2progressBar?.max = scaledMaxPm2
     listViewHolder.caqi?.text = caqi
 
     val params = listViewHolder.guidelineVerticalBottomSpaceProgress?.layoutParams as ConstraintLayout.LayoutParams
-    params.guidePercent = 0.95f
+    params.guidePercent = pm2.toFloat() / scaledMaxPm2
     listViewHolder.guidelineVerticalBottomSpaceProgress?.layoutParams = params
 
     return convertView!!
@@ -110,8 +112,8 @@ class MainAdapter(private val context: Context, sensorResult: LinkedHashMap<Sens
     var name: TextView? = null
     var pm10: TextView? = null
     var pm10progressBar: ProgressBar? = null
-    var pm2dot5: TextView? = null
-    var pm2dot5progressBar: ProgressBar? = null
+    var pm2: TextView? = null
+    var pm2progressBar: ProgressBar? = null
     var caqi: TextView? = null
     var spaceBottom: View? = null
     var guidelineVerticalBottomSpaceProgress: Guideline? = null
