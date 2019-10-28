@@ -17,7 +17,6 @@ import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_RYNEK
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SIKORSKIEGO
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_SZPITALNA
 import pl.tobzzo.miechowskiepowietrze.utils.TimeUtils
-import retrofit2.Call
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -32,13 +31,13 @@ AnalyticsComponent, val sensorObject: SensorObject) : NetworkComponent {
 
   private fun makeHttpRequest(
     sensor: Sensor
-  ): Observable<Call<Measurements>>? {
+  ): Observable<Measurements>? {
 
     Timber.d("Response map remove:${sensor.place}")
     responseMap!!.remove(sensor)
 
 
-    return retrofitProvider.getAllMeasurements("AIRLY_CAQI", sensor, ::parseNewResult)
+    return retrofitProvider.getAllMeasurements("AIRLY_CAQI", sensor)
   }
 
   private fun parseNewResult(sensor: Sensor,
@@ -136,10 +135,10 @@ AnalyticsComponent, val sensorObject: SensorObject) : NetworkComponent {
       ?.mergeWith(completable6)
       ?.observeOn(mainThread())
       ?.subscribeOn(Schedulers.io())
-      ?.subscribeBy(
-      onComplete = { onSuccess() },
-      onError = { error -> onError(error) }
-    )
+      ?.map { item -> parseNewResult(sensorSIKORSKIEGO, item) }
+      ?.subscribe { tryToShowResult()
+      }
+
   }
 
   private fun onError(error: Throwable) {
