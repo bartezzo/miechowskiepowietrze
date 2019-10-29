@@ -8,6 +8,7 @@ import io.reactivex.schedulers.Schedulers
 import pl.tobzzo.miechowskiepowietrze.analytics.AnalyticsComponent
 import pl.tobzzo.miechowskiepowietrze.connection.RetrofitProvider
 import pl.tobzzo.miechowskiepowietrze.rest.v2.Measurements
+import pl.tobzzo.miechowskiepowietrze.rest.v2.SensorMeasurements
 import pl.tobzzo.miechowskiepowietrze.sensor.Sensor
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorObject
 import pl.tobzzo.miechowskiepowietrze.sensor.SensorPlace.MIECHOW_KOPERNIKA
@@ -31,13 +32,13 @@ AnalyticsComponent, val sensorObject: SensorObject) : NetworkComponent {
 
   private fun makeHttpRequest(
     sensor: Sensor
-  ): Observable<Measurements>? {
+  ): Observable<SensorMeasurements>? {
 
     Timber.d("Response map remove:${sensor.place}")
     responseMap!!.remove(sensor)
 
 
-    return retrofitProvider.getAllMeasurements("AIRLY_CAQI", sensor)
+    return retrofitProvider.getAllMeasurements("AIRLY_CAQI", sensor)?.map { measurements -> SensorMeasurements(sensor, measurements) }
   }
 
   private fun parseNewResult(sensor: Sensor,
@@ -104,14 +105,6 @@ AnalyticsComponent, val sensorObject: SensorObject) : NetworkComponent {
   }
 
   private fun listSensorsMeasurements() {
-//    val iterator = sensorObject.activeSensors.iterator()
-//    while (iterator.hasNext()) {
-//      val sensorPlace = iterator.next()
-//      val sensor = sensorObject.getSensor(sensorPlace)
-//      sensor?.let {
-//        makeHttpRequest(sensor)
-//      }
-//    }
 
     val sensorSIKORSKIEGO = sensorObject.getSensor(MIECHOW_SIKORSKIEGO)
     val sensorRYNEK = sensorObject.getSensor(MIECHOW_RYNEK)
@@ -135,10 +128,12 @@ AnalyticsComponent, val sensorObject: SensorObject) : NetworkComponent {
       ?.mergeWith(completable6)
       ?.observeOn(mainThread())
       ?.subscribeOn(Schedulers.io())
-      ?.map { item -> parseNewResult(sensorSIKORSKIEGO, item) }
-      ?.subscribe { tryToShowResult()
+      ?.map { item -> parseNewResult(item.sensor, item.measurements) }
+      ?.doOnComplete {
+        Timber.d("doOnComplete call")
+        tryToShowResult()
       }
-
+      ?.subscribe { Timber.d("subscribe call") }
   }
 
   private fun onError(error: Throwable) {
