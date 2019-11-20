@@ -42,8 +42,8 @@ ext {
     buildToolsVersion = '26.0.1'
 
     //Version
-    versionCode = 5
-    versionName = '3.5.2'
+    versionCode = 6
+    versionName = '3.5.3'
 
     // App dependencies
     // App dependencies
